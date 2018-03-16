@@ -10,7 +10,6 @@ import (
 	beegoCtx "github.com/astaxie/beego/context"
 	"fmt"
 	"time"
-	"github.com/golang/glog"
 )
 
 type ESClient struct {
@@ -61,8 +60,6 @@ func (c *ESClient) SearchTodayLog(indexs []string, namespace string, containerNa
 
 	query.Should(shouldQuery...)
 
-	glog.Infof("indexs====[%v]\n",indexs)
-
 	svc := c.client.Scroll(indexs...).Query(query).Sort("time_nano", true).Size(200)
 
 	var docs int64 = 0
@@ -107,6 +104,20 @@ func (c *ESClient) SearchTodayLog(indexs []string, namespace string, containerNa
 
 		docs = docs + 200
 
+	}
+
+	return nil
+
+}
+
+func (c *ESClient) IndexLogToES(index string, esType string, indexLogData IndexLogData) error {
+	indexResult, err := c.client.Index().Index(index).Type(esType).BodyJson(&indexLogData).Do(context.TODO())
+	if err != nil {
+		return err
+	}
+
+	if indexResult == nil {
+		return fmt.Errorf("index to ElasticSearch failed")
 	}
 
 	return nil

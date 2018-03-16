@@ -6,7 +6,9 @@
 
 package log
 
-import "time"
+import (
+	"time"
+)
 
 // ESResponse represents the data structure of logging data returned from elasticsearch
 type ESResponse struct {
@@ -61,12 +63,38 @@ type ESHit struct {
 
 // ESHitSource represents data structure of .hits.hits._source
 type ESHitSource struct {
-	Log        string                 `json:"log,omitempty"`
+	Log string                 `json:"log,omitempty"`
 	//Kubernetes map[string]string      `json:"kubernetes,omitempty"` // corresponding to variable requiredFields
-	Stream     string                 `json:"stream,omitempty"`
+	Stream string                 `json:"stream,omitempty"`
 	//Docker     map[string]interface{} `json:"docker,omitempty"`
+	TimeNano  string                 `json:"time_nano,omitempty"`
+	Tag       string                 `json:"tag,omitempty"`
+	Timestamp time.Time              `json:"@timestamp,omitempty"`
+	FileName  string                 `json:"filename,omitempty"`
+}
+
+type IndexLogData struct {
+	Log        string                 `json:"log,omitempty"`
+	Kubernetes Kubernetes             `json:"kubernetes,omitempty"` // corresponding to variable requiredFields
+	Stream     string                 `json:"stream,omitempty"`
+	Docker     Docker                 `json:"docker,omitempty"`
 	TimeNano   string                 `json:"time_nano,omitempty"`
 	Tag        string                 `json:"tag,omitempty"`
 	Timestamp  time.Time              `json:"@timestamp,omitempty"`
-	FileName   string                 `json:"filename,omitempty"`
+}
+
+type Docker struct {
+	ContainerId string `json:"container_id,omitempty"`
+}
+
+type Kubernetes struct {
+	ContainerName string `json:"container_name,omitempty"`
+	NamespaceName string `json:"namespace_name,omitempty"`
+	PodName       string `json:"pod_name,omitempty"`
+	PodId         string `json:"pod_id,omitempty"`
+	Labels        Labels `json:"labels,omitempty"`
+}
+
+type Labels struct {
+	ClusterID string `json:"ClusterID,omitempty"`
 }
