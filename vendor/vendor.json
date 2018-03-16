@@ -345,6 +345,18 @@
 			"revisionTime": "2017-07-18T20:23:41Z"
 		},
 		{
+			"checksumSHA1": "d9PxF1XQGLMJZRct2R8qVM/eYlE=",
+			"path": "github.com/hashicorp/golang-lru",
+			"revision": "0a025b7e63adc15a622f29b0b2c4c3848243bbf6",
+			"revisionTime": "2016-08-13T22:13:03Z"
+		},
+		{
+			"checksumSHA1": "2nOpYjx8Sn57bqlZq17yM4YJuM4=",
+			"path": "github.com/hashicorp/golang-lru/simplelru",
+			"revision": "0a025b7e63adc15a622f29b0b2c4c3848243bbf6",
+			"revisionTime": "2016-08-13T22:13:03Z"
+		},
+		{
 			"checksumSHA1": "a8Ge6pE7oxux9ZMZVAlyEeGzCng=",
 			"path": "github.com/juju/ratelimit",
 			"revision": ""
@@ -996,6 +1008,12 @@
 		{
 			"checksumSHA1": "fJG2oyXJMDa3Ocizs3zI8B9Skiw=",
 			"path": "k8s.io/apimachinery/pkg/types",
+			"revision": "8ab5f3d8a330c2e9baaf84e39042db8d49034ae2",
+			"revisionTime": "2017-08-29T12:45:39Z"
+		},
+		{
+			"checksumSHA1": "O9/UbncQTi5DxuckDfLVhJALjz4=",
+			"path": "k8s.io/apimachinery/pkg/util/cache",
 			"revision": "8ab5f3d8a330c2e9baaf84e39042db8d49034ae2",
 			"revisionTime": "2017-08-29T12:45:39Z"
 		},
