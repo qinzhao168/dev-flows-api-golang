@@ -21,7 +21,7 @@ type CDRules struct {
 	CreateTime            time.Time `orm:"column(create_time)" json:"create_time"`
 	UpdateTime            time.Time `orm:"column(update_time)" json:"update_time"`
 	Tag                   string `orm:"column(tag)" json:"tag,omitempty"`
-	MinReadySeconds       int8 `orm:"column(min_ready_seconds)" json:"min_ready_seconds"`
+	MinReadySeconds       int32 `orm:"column(min_ready_seconds)" json:"min_ready_seconds"`
 }
 
 type CdRuleReq struct {
@@ -29,7 +29,7 @@ type CdRuleReq struct {
 	Image_name       string `json:"image_name"`
 	Match_tag        string `json:"match_tag"`
 	Upgrade_strategy int8 `json:"upgrade_strategy"`
-	MinReadySeconds  int8 `json:"min_ready_seconds"`
+	MinReadySeconds  int32 `json:"min_ready_seconds"`
 	Binding_service  Binding_service `json:"binding_service"`
 }
 
