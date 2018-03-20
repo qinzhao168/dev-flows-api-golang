@@ -327,6 +327,18 @@ func (cf *CiFlows) FindFlowById(namespace, flowId string, orms ...orm.Ormer) (ci
 	return
 }
 
+func (cf *CiFlows) FindFlowByIdCrab(flowId string, orms ...orm.Ormer) (ciflow CiFlows, err error) {
+	var o orm.Ormer
+	if len(orms) != 1 {
+		o = orm.NewOrm()
+	} else {
+		o = orms[0]
+	}
+	err = o.QueryTable(cf.TableName()).Filter("flow_id", flowId).
+		One(&ciflow)
+	return
+}
+
 func (cf *CiFlows) RemoveFlow(namespace, flowId string, orms ...orm.Ormer) (deleteRes int64, err error) {
 	var o orm.Ormer
 	if len(orms) != 1 {

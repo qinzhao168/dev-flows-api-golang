@@ -524,6 +524,18 @@ func (cf *CiFlowsController) UpdateCIRules() {
 		return
 	}
 
+	if ci.Enabled == 1 {
+		go func() {
+			//repoType:SVN GIT
+			if ci.CiConfig.Crontab.Enabled == 1 {
+				ciFlow, _ := models.NewCiFlows().FindFlowByIdCrab(stageInfo.FlowId)
+				EnnFlowCrontab := NewEnnFlowCrontab(ciFlow, ci.CiConfig.Crontab.CrontabTime,
+					ci.CiConfig.Crontab.RepoType, ci.CiConfig.Crontab.Branch)
+				EnnFlowCrontab.RunCrontab()
+			}
+		}()
+	}
+
 	type Result struct {
 		StageId string `json:"stageId"`
 	}

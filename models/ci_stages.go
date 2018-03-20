@@ -95,10 +95,18 @@ type Ci struct {
 }
 
 type CiConfig struct {
+	Crontab      Crontab `json:"crontab,omitempty"`
 	Branch       Branch `json:"branch,omitempty"`
 	Tag          Tag `json:"tag,omitempty"`
 	MergeRequest bool `json:"mergeRequest,omitempty"`
 	BuildCluster string `json:"buildCluster,omitempty"`
+}
+
+type Crontab struct {
+	RepoType    string `json:"repoType,omitempty"`
+	Enabled     int8 `json:"enabled,omitempty"`
+	CrontabTime time.Time `json:"crontabTime"`
+	Branch      string `json:"branch,omitempty"`
 }
 
 type Branch struct {
@@ -360,6 +368,13 @@ func (cs *CiStages) FindOneById(stageId string) (stage CiStages, err error) {
 func (cs *CiStages) FindByIds(flowId, ids string) (stages []CiStages, total int64, err error) {
 	o := orm.NewOrm()
 	sql := fmt.Sprintf("select * from %s where flow_id='%s' and stage_id in (%s)", cs.TableName(), flowId, ids)
+	total, err = o.Raw(sql).QueryRows(&stages)
+	return
+}
+
+func (cs *CiStages) FindAllStage() (stages []CiStages, total int64, err error) {
+	o := orm.NewOrm()
+	sql := fmt.Sprintf("select * from %s where seq=1 ", cs.TableName())
 	total, err = o.Raw(sql).QueryRows(&stages)
 	return
 }
