@@ -851,6 +851,11 @@
 			"revisionTime": "2018-01-08T11:19:20Z"
 		},
 		{
+			"checksumSHA1": "QOArjOeNBqskiZykt6ZZN5GRdvo=",
+			"path": "gopkg.in/robfig/cron.v2",
+			"revision": ""
+		},
+		{
 			"checksumSHA1": "yV+2de12Q/t09hBGYGKEOFr1/zc=",
 			"path": "gopkg.in/yaml.v2",
 			"revision": ""
