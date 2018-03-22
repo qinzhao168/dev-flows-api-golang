@@ -37,7 +37,7 @@ var (
 		isDebug = beego.AppConfig.String("RunMode") != "pro"
 		// debug 模式下，允许延迟设置数据库
 		//if host == "" || user == "" || pass == "" {
-		if host == "" || user == ""  {
+		if host == "" || user == "" {
 			err = fmt.Errorf("MySQL配置有误, host:%s, port:%s, user:%s, pass:%s, if you're running in tests, you can ignore it", host, port, user, pass)
 			return
 		}
@@ -74,15 +74,15 @@ var (
 		case "postgres":
 			common.DType = common.DRPostgres
 			var configs []string
-			configs = append(configs, "user=" + user)
-			configs = append(configs, "password=" + pass)
-			configs = append(configs, "host=" + host)
-			configs = append(configs, "port=" + port)
+			configs = append(configs, "user="+user)
+			configs = append(configs, "password="+pass)
+			configs = append(configs, "host="+host)
+			configs = append(configs, "port="+port)
 			configs = append(configs, "sslmode=disable")
 			configStr := strings.Join(configs, " ")
 			//for _, name := range dbnames {
-			dsn = append(dsn, configStr + " dbname=" + dbnameStr)
-		//}
+			dsn = append(dsn, configStr+" dbname="+dbnameStr)
+			//}
 		default:
 			err = fmt.Errorf("driver %s is not supported", driver)
 			return
@@ -125,6 +125,7 @@ func InitializeSQLPool(driver string, dsn []string, maxIdle, maxConn int, isDebu
 	orm.RegisterModel(new(CiStageLinks), new(CiStages), new(cluster.Configs))
 	orm.RegisterModel(new(AuditRecord))
 	orm.RegisterModel(new(CiFlowBuildLogs))
+	orm.RegisterModel(new(CiCrontab))
 	// orm.RunSyncdb("default", true, true)
 
 	orm.Debug = false

@@ -17,14 +17,17 @@ import (
 	"dev-flows-api-golang/modules/client"
 
 	"strings"
+	"os"
 )
 
 func init() {
 
-	//client.Initk8sClient()
-	stopCh := make(chan struct{})
-	//go WatchEventAndPutMessageToEs(client.KubernetesClientSet.Clientset)
-	go NewController(client.KubernetesClientSet.Clientset).Run(10, stopCh)
+	if os.Getenv("EnabledGatherEventToES") != "" {
+		//client.Initk8sClient()
+		stopCh := make(chan struct{})
+		//go WatchEventAndPutMessageToEs(client.KubernetesClientSet.Clientset)
+		go NewController(client.KubernetesClientSet.Clientset).Run(10, stopCh)
+	}
 
 }
 
