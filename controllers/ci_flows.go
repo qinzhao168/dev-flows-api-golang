@@ -532,40 +532,21 @@ func (cf *CiFlowsController) UpdateCIRules() {
 				glog.Errorf("%s failed:%v\n", method, err)
 			}
 			//open
-
-			//ciCrontab, _ := models.NewCiCrontab().FindCiCrontabByFlowId(stageInfo.FlowId)
-			//if ciCrontab.DoCrontabTime==time.FixedZone() {
-			//
-			//
-			//}
-
 			if ci.CiConfig.Crontab.Enabled == 1 {
 
 				if EnnCrontab.Exist(flow_id) {
 					EnnCrontab.Remove(EnnCrontab.GetCrontabId(flow_id))
 				}
+
+				EnnCrontab.RunCrontab(ciFlow, ci.CiConfig.Crontab.CrontabTime, ci.CiConfig.Crontab.RepoType, ci.CiConfig.Crontab.Branch, true)
 				
-				EnnCrontab.RunCrontab(ciFlow, ci.CiConfig.Crontab.CrontabTime, ci.CiConfig.Crontab.RepoType, ci.CiConfig.Crontab.Branch)
-
-				if models.NewCiCrontab().Exist(flow_id) {
-
-					models.NewCiCrontab().UpdateCiCrontabByFlowId(flow_id, ci.CiConfig.Crontab.CrontabTime, int(EnnCrontab.Ids[flow_id]), 1)
-
-				} else {
-					var crontab models.CiCrontab
-					crontab.FlowId = flow_id
-					crontab.Enabled = 1
-					crontab.CrontabId = int(EnnCrontab.Ids[flow_id])
-					crontab.DoCrontabTime = ci.CiConfig.Crontab.CrontabTime
-
-					models.NewCiCrontab().CreateOneCiCrontab(crontab)
-				}
 				//close
 			} else {
 				if EnnCrontab.Exist(flow_id) {
 					EnnCrontab.Remove(EnnCrontab.GetCrontabId(flow_id))
 					EnnCrontab.DeleteIdToMap(flow_id)
-					models.NewCiCrontab().EnabledCiCrontab(flow_id, ci.CiConfig.Crontab.CrontabTime, 0)
+					models.NewCiCrontab().EnabledCiCrontab(flow_id, ci.CiConfig.Crontab.CrontabTime.Add(8*time.Hour),
+						0)
 				}
 			}
 

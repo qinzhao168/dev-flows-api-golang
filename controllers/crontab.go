@@ -50,7 +50,8 @@ func Crontabv2() {
 			//repoType:SVN GIT
 			if ciConfig.Crontab.Enabled == 1 && stageInfo.CiEnabled == 1 {
 				ciFlow, _ := models.NewCiFlows().FindFlowByIdCrab(stageInfo.FlowId)
-				EnnCrontab.RunCrontab(ciFlow, ciConfig.Crontab.CrontabTime, ciConfig.Crontab.RepoType, ciConfig.Crontab.Branch)
+				EnnCrontab.RunCrontab(ciFlow, ciConfig.Crontab.CrontabTime, ciConfig.Crontab.RepoType,
+					ciConfig.Crontab.Branch, false)
 
 			}
 
@@ -62,17 +63,21 @@ func Crontabv2() {
 
 }
 
+type Crontab struct {
+	EntryID       cron.EntryID
+	DoCrontabTime time.Time
+}
 type EnnFlowCrontab struct {
 	Mutex   sync.RWMutex
 	Crontab *cron.Cron
-	Ids     map[string]cron.EntryID
+	Ids     map[string]Crontab
 	Id      int
 }
 
 func NewEnnFlowCrontab() *EnnFlowCrontab {
 	return &EnnFlowCrontab{
 		Crontab: cron.New(),
-		Ids:     make(map[string]cron.EntryID, 0),
+		Ids:     make(map[string]Crontab, 0),
 		Id:      1,
 	}
 }
@@ -91,10 +96,13 @@ func (ennCrontab *EnnFlowCrontab) IdIncrease() {
 	ennCrontab.Id++
 }
 
-func (ennCrontab *EnnFlowCrontab) AddIdToMap(flowId string, id cron.EntryID) {
+func (ennCrontab *EnnFlowCrontab) AddIdToMap(flowId string, id cron.EntryID, doCrontabTime time.Time) {
 	ennCrontab.Mutex.Lock()
 	defer ennCrontab.Mutex.Unlock()
-	ennCrontab.Ids[flowId] = id
+	var crontab Crontab
+	crontab.EntryID = id
+	crontab.DoCrontabTime = doCrontabTime
+	ennCrontab.Ids[flowId] = crontab
 
 }
 
@@ -108,12 +116,7 @@ func (ennCrontab *EnnFlowCrontab) Exist(flowId string) bool {
 
 	_, ok := ennCrontab.Ids[flowId]
 
-	con, err := models.NewCiCrontab().FindCiCrontabByFlowId(flowId)
-	if err != nil {
-		glog.Errorf("", err)
-	}
-
-	return ok && con.Enabled == 1
+	return ok
 
 }
 
@@ -131,12 +134,22 @@ func (ennCrontab *EnnFlowCrontab) GetCrontabId(flowId string) cron.EntryID {
 	ennCrontab.Mutex.Lock()
 	defer ennCrontab.Mutex.Unlock()
 
-	return ennCrontab.Ids[flowId]
+	return ennCrontab.Ids[flowId].EntryID
 
 }
 
-func (ennCrontab *EnnFlowCrontab) RunCrontab(ciFlow models.CiFlows, doCrontabTime time.Time, repoType, branch string) {
-	doCrontabTime = doCrontabTime.Add(8 * time.Hour)
+func (ennCrontab *EnnFlowCrontab) RunCrontab(ciFlow models.CiFlows, doCrontabTime time.Time, repoType, branch string, comeFrom bool) {
+
+	var ciCon models.CiCrontab
+	ciCon.CrontabId = ennCrontab.Id
+	ciCon.Enabled = 1
+	ciCon.FlowId = ciFlow.FlowId
+	ciCon.DoCrontabTime = doCrontabTime
+
+	if comeFrom {
+		doCrontabTime = doCrontabTime.Add(8 * time.Hour)
+	}
+
 	DoCrontabTime := doCrontabTime.Format("05 04 15 * * *")
 
 	glog.Infof("doCrontabTime:%s,ennCrontab.id=%d\n", doCrontabTime, ennCrontab.Id)
@@ -146,20 +159,16 @@ func (ennCrontab *EnnFlowCrontab) RunCrontab(ciFlow models.CiFlows, doCrontabTim
 
 	id, _ := ennCrontab.Crontab.AddFunc(DoCrontabTime, crontabInfo.Run, crontabInfo.Id)
 
-	ennCrontab.AddIdToMap(ciFlow.FlowId, id)
+	ennCrontab.AddIdToMap(ciFlow.FlowId, id, doCrontabTime)
 
 	ennCrontab.IdIncrease()
-	var ciCon models.CiCrontab
-	ciCon.CrontabId = ennCrontab.Id
-	ciCon.Enabled = 1
-	ciCon.FlowId = ciFlow.FlowId
-	ciCon.DoCrontabTime = doCrontabTime
+
 	_, err := models.NewCiCrontab().InsertOrUpdateCiCrontab(ciCon)
 	if err != nil {
 		glog.Errorf("NewCiCrontab.CreateOneCiCrontab failed:%v\n", err)
 
 	}
-	glog.Infof("======>>id=%d\n", id)
+	glog.Infof("NewCiCrontab======>>id=%d\n", id)
 }
 
 type CrontabInfo struct {
@@ -227,14 +236,22 @@ func SyncCICrontab() {
 			if err != nil {
 				glog.Errorf("ListCiCrontab failed:result=%d,Error=%v\n", result, err)
 			}
-
 			for _, ciCrontab := range ciCrontabs {
-				glog.Infof("ciCrontab=", ciCrontab)
+
+				if _, ok := EnnCrontab.Ids[ciCrontab.FlowId]; ok {
+					glog.Infof("ciCrontab:%s===%s\n", ciCrontab.DoCrontabTime.Format("05 04 15 * * *"),
+						EnnCrontab.Ids[ciCrontab.FlowId].DoCrontabTime.Format("05 04 15 * * *"))
+					if ciCrontab.DoCrontabTime.Format("05 04 15 * * *") !=
+						EnnCrontab.Ids[ciCrontab.FlowId].DoCrontabTime.Format("05 04 15 * * *") {
+						EnnCrontab.Remove(EnnCrontab.Ids[ciCrontab.FlowId].EntryID)
+						EnnCrontab.DeleteIdToMap(ciCrontab.FlowId)
+					}
+
+				}
 
 			}
 
 		}
 
 	}
-
 }
