@@ -23,20 +23,15 @@ func init() {
 	EnnCrontab = NewEnnFlowCrontab()
 	EnnCrontab.Start()
 	go Crontabv2()
+	go SyncCICrontab()
 }
 
 func Crontabv2() {
 
 	method := "Crontab"
 
-	err := models.NewCiCrontab().DeleteAllCiCrontab()
-	if err != nil {
-		glog.Errorf("delete CiCrontab failed:%v\n", err)
-	}
-
-	glog.Infof("%s\n", err)
-
 	stage := &models.CiStages{}
+
 	stageInfos, total, err := stage.FindAllStage()
 
 	if err != nil || total == 0 {
@@ -149,10 +144,6 @@ func (ennCrontab *EnnFlowCrontab) RunCrontab(ciFlow models.CiFlows, doCrontabTim
 
 	crontabInfo := NewCrontabInfo(ciFlow, doCrontabTime, repoType, branch, ennCrontab.Id)
 
-	ennCrontab.Crontab.AddFunc(DoCrontabTime, func() {
-		glog.Infof("=====================demodemodemodemodmeodmoedmode==>>>>\n")
-	}, 1000)
-
 	id, _ := ennCrontab.Crontab.AddFunc(DoCrontabTime, crontabInfo.Run, crontabInfo.Id)
 
 	ennCrontab.AddIdToMap(ciFlow.FlowId, id)
@@ -225,4 +216,25 @@ func (ennCrontab *CrontabInfo) Run() {
 		stagequeue.InsertLog()
 		go stagequeue.Run()
 	}
+}
+
+func SyncCICrontab() {
+
+	for {
+		select {
+		case <-time.NewTicker(3 * time.Second).C:
+			ciCrontabs, result, err := models.NewCiCrontab().ListCiCrontab()
+			if err != nil {
+				glog.Errorf("ListCiCrontab failed:result=%d,Error=%v\n", result, err)
+			}
+
+			for _, ciCrontab := range ciCrontabs {
+				glog.Infof("ciCrontab=", ciCrontab)
+
+			}
+
+		}
+
+	}
+
 }

@@ -531,13 +531,21 @@ func (cf *CiFlowsController) UpdateCIRules() {
 			if err != nil {
 				glog.Errorf("%s failed:%v\n", method, err)
 			}
+			//open
+
+			//ciCrontab, _ := models.NewCiCrontab().FindCiCrontabByFlowId(stageInfo.FlowId)
+			//if ciCrontab.DoCrontabTime==time.FixedZone() {
+			//
+			//
+			//}
 
 			if ci.CiConfig.Crontab.Enabled == 1 {
 
 				if EnnCrontab.Exist(flow_id) {
 					EnnCrontab.Remove(EnnCrontab.GetCrontabId(flow_id))
-					EnnCrontab.RunCrontab(ciFlow, ci.CiConfig.Crontab.CrontabTime, ci.CiConfig.Crontab.RepoType, ci.CiConfig.Crontab.Branch)
 				}
+				
+				EnnCrontab.RunCrontab(ciFlow, ci.CiConfig.Crontab.CrontabTime, ci.CiConfig.Crontab.RepoType, ci.CiConfig.Crontab.Branch)
 
 				if models.NewCiCrontab().Exist(flow_id) {
 
@@ -552,7 +560,7 @@ func (cf *CiFlowsController) UpdateCIRules() {
 
 					models.NewCiCrontab().CreateOneCiCrontab(crontab)
 				}
-
+				//close
 			} else {
 				if EnnCrontab.Exist(flow_id) {
 					EnnCrontab.Remove(EnnCrontab.GetCrontabId(flow_id))

@@ -93,3 +93,9 @@ func (cd *CiCrontab) UpdateCiCrontabByFlowId(flow_id string, doCrontabTime time.
 	})
 	return
 }
+
+func (cd *CiCrontab) ListCiCrontab() (ciCrontabs []CiCrontab, result int64, err error) {
+	o := orm.NewOrm()
+	result, err = o.QueryTable(cd.TableName()).All(&ciCrontabs)
+	return
+}
