@@ -67,6 +67,12 @@ func (cd *CiCrontab) CreateOneCiCrontab(crontab CiCrontab) (result int64, err er
 	return
 }
 
+func (cd *CiCrontab) InsertOrUpdateCiCrontab(crontab CiCrontab) (result int64, err error) {
+	o := orm.NewOrm()
+	result, err = o.InsertOrUpdate(&crontab)
+	return
+}
+
 func (cd *CiCrontab) EnabledCiCrontab(flow_id string, doCrontabTime time.Time, enabled int) (result int64, err error) {
 	o := orm.NewOrm()
 	result, err = o.QueryTable(cd.TableName()).

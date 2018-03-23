@@ -29,7 +29,12 @@ func Crontabv2() {
 
 	method := "Crontab"
 
-	models.NewCiCrontab().DeleteAllCiCrontab()
+	err := models.NewCiCrontab().DeleteAllCiCrontab()
+	if err != nil {
+		glog.Errorf("delete CiCrontab failed:%v\n", err)
+	}
+
+	glog.Infof("%s\n", err)
 
 	stage := &models.CiStages{}
 	stageInfos, total, err := stage.FindAllStage()
@@ -41,8 +46,6 @@ func Crontabv2() {
 	for _, stageInfo := range stageInfos {
 
 		if stageInfo.CiConfig != "" {
-			glog.Infof("%s ci config info %s\n", method, stageInfo.CiConfig)
-
 			var ciConfig models.CiConfig
 			err = json.Unmarshal([]byte(stageInfo.CiConfig), &ciConfig)
 			if err != nil {
@@ -138,12 +141,17 @@ func (ennCrontab *EnnFlowCrontab) GetCrontabId(flowId string) cron.EntryID {
 }
 
 func (ennCrontab *EnnFlowCrontab) RunCrontab(ciFlow models.CiFlows, doCrontabTime time.Time, repoType, branch string) {
-
+	doCrontabTime = doCrontabTime.Add(8 * time.Hour)
 	DoCrontabTime := doCrontabTime.Format("05 04 15 * * *")
 
-	glog.Infof("%s\n", doCrontabTime)
+	glog.Infof("doCrontabTime:%s,ennCrontab.id=%d\n", doCrontabTime, ennCrontab.Id)
+	glog.Infof("DoCrontabTime:%s,ennCrontab.id=%d\n", DoCrontabTime, ennCrontab.Id)
 
 	crontabInfo := NewCrontabInfo(ciFlow, doCrontabTime, repoType, branch, ennCrontab.Id)
+
+	ennCrontab.Crontab.AddFunc(DoCrontabTime, func() {
+		glog.Infof("=====================demodemodemodemodmeodmoedmode==>>>>\n")
+	}, 1000)
 
 	id, _ := ennCrontab.Crontab.AddFunc(DoCrontabTime, crontabInfo.Run, crontabInfo.Id)
 
@@ -155,9 +163,9 @@ func (ennCrontab *EnnFlowCrontab) RunCrontab(ciFlow models.CiFlows, doCrontabTim
 	ciCon.Enabled = 1
 	ciCon.FlowId = ciFlow.FlowId
 	ciCon.DoCrontabTime = doCrontabTime
-	_, err := models.NewCiCrontab().CreateOneCiCrontab(ciCon)
+	_, err := models.NewCiCrontab().InsertOrUpdateCiCrontab(ciCon)
 	if err != nil {
-		glog.Errorf("NewCiCrontab.CreateOneCiCrontab failed:%v\n")
+		glog.Errorf("NewCiCrontab.CreateOneCiCrontab failed:%v\n", err)
 
 	}
 	glog.Infof("======>>id=%d\n", id)
