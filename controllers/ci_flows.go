@@ -278,6 +278,14 @@ func (cf *CiFlowsController) SyncCIFlow() {
 				stage.CreationTime = time.Now()
 
 				ciConfig = stageInfo.Spec.Ci.CiConfig
+
+				var branch models.Branch
+				ciConfig.Branch = branch
+				var tag models.Tag
+				ciConfig.Tag = tag
+				var cron models.Crontab
+				ciConfig.Crontab = cron
+				
 				ciConfigData, err := json.Marshal(ciConfig)
 				if err != nil {
 					glog.Errorf("%s buildInfo json unmarsh failed:%v\n", method, err)
@@ -288,6 +296,11 @@ func (cf *CiFlowsController) SyncCIFlow() {
 				stage.CiConfig = string(ciConfigData)
 
 				stage.CiEnabled = stageInfo.Spec.Ci.Enabled
+
+				if stageInfo.Spec.Ci.Enabled == 1 {
+					stage.CiEnabled = 0
+				}
+
 				//get dockerfile
 				if stageInfo.Spec.Build != nil && stageInfo.Metadata.Type == 3 {
 					oldDockerfile, err := models.NewCiDockerfile().GetDockerfile(namespace, flowId, stageInfo.Metadata.Id, orm)
