@@ -285,7 +285,7 @@ func (cf *CiFlowsController) SyncCIFlow() {
 				ciConfig.Tag = tag
 				var cron models.Crontab
 				ciConfig.Crontab = cron
-				
+
 				ciConfigData, err := json.Marshal(ciConfig)
 				if err != nil {
 					glog.Errorf("%s buildInfo json unmarsh failed:%v\n", method, err)

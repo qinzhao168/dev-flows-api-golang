@@ -176,7 +176,7 @@ type CrontabInfo struct {
 func NewCrontabInfo(ciFlow models.CiFlows, doCrontabTime time.Time, repoType, branch string, id int) CrontabInfo {
 	CodeBranch := ""
 
-	if repoType == RepoTypeGIT {
+	if repoType != RepoTypeGIT {
 		CodeBranch = branch
 	}
 
@@ -188,6 +188,12 @@ func NewCrontabInfo(ciFlow models.CiFlows, doCrontabTime time.Time, repoType, br
 		Namespace:     ciFlow.Namespace,
 		UserNamespace: ciFlow.Namespace,
 	}
+	//ennFlow.FlowId = flowId
+	//ennFlow.StageId = bodyReqBody.StageId
+	//ennFlow.CodeBranch = bodyReqBody.Options.Branch
+	//ennFlow.LoginUserName = cf.User.Username
+	//ennFlow.Namespace = cf.Namespace
+	//ennFlow.UserNamespace = cf.User.Namespace
 
 	crontabInfo := CrontabInfo{
 		EnnFlow:       flow,
@@ -235,8 +241,8 @@ func SyncCICrontab() {
 			for _, ciCrontab := range ciCrontabs {
 
 				if _, ok := EnnCrontab.Ids[ciCrontab.FlowId]; ok {
-					glog.Infof("ciCrontab:%s===%s\n", ciCrontab.DoCrontabTime.Format("05 04 15 * * *"),
-						EnnCrontab.Ids[ciCrontab.FlowId].DoCrontabTime.Format("05 04 15 * * *"))
+					//glog.Infof("ciCrontab:%s===%s\n", ciCrontab.DoCrontabTime.Format("05 04 15 * * *"),
+					//	EnnCrontab.Ids[ciCrontab.FlowId].DoCrontabTime.Format("05 04 15 * * *"))
 					if ciCrontab.DoCrontabTime.Format("05 04 15 * * *") !=
 						EnnCrontab.Ids[ciCrontab.FlowId].DoCrontabTime.Format("05 04 15 * * *") {
 						EnnCrontab.Remove(EnnCrontab.Ids[ciCrontab.FlowId].EntryID)
