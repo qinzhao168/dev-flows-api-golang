@@ -51,7 +51,7 @@ func Crontabv2() {
 			if ciConfig.Crontab.Enabled == 1 && stageInfo.CiEnabled == 1 {
 				ciFlow, _ := models.NewCiFlows().FindFlowByIdCrab(stageInfo.FlowId)
 				EnnCrontab.RunCrontab(ciFlow, ciConfig.Crontab.CrontabTime, ciConfig.Crontab.RepoType,
-					ciConfig.Crontab.Branch, false)
+					ciConfig.Crontab.Branch)
 
 			}
 
@@ -138,17 +138,13 @@ func (ennCrontab *EnnFlowCrontab) GetCrontabId(flowId string) cron.EntryID {
 
 }
 
-func (ennCrontab *EnnFlowCrontab) RunCrontab(ciFlow models.CiFlows, doCrontabTime time.Time, repoType, branch string, comeFrom bool) {
+func (ennCrontab *EnnFlowCrontab) RunCrontab(ciFlow models.CiFlows, doCrontabTime time.Time, repoType, branch string) {
 
 	var ciCon models.CiCrontab
 	ciCon.CrontabId = ennCrontab.Id
 	ciCon.Enabled = 1
 	ciCon.FlowId = ciFlow.FlowId
 	ciCon.DoCrontabTime = doCrontabTime
-
-	if comeFrom {
-		doCrontabTime = doCrontabTime.Add(8 * time.Hour)
-	}
 
 	DoCrontabTime := doCrontabTime.Format("05 04 15 * * *")
 

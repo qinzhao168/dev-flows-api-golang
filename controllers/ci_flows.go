@@ -538,14 +538,14 @@ func (cf *CiFlowsController) UpdateCIRules() {
 					EnnCrontab.Remove(EnnCrontab.GetCrontabId(flow_id))
 				}
 
-				EnnCrontab.RunCrontab(ciFlow, ci.CiConfig.Crontab.CrontabTime, ci.CiConfig.Crontab.RepoType, ci.CiConfig.Crontab.Branch, true)
-				
+				EnnCrontab.RunCrontab(ciFlow, ci.CiConfig.Crontab.CrontabTime, ci.CiConfig.Crontab.RepoType, ci.CiConfig.Crontab.Branch)
+
 				//close
 			} else {
 				if EnnCrontab.Exist(flow_id) {
 					EnnCrontab.Remove(EnnCrontab.GetCrontabId(flow_id))
 					EnnCrontab.DeleteIdToMap(flow_id)
-					models.NewCiCrontab().EnabledCiCrontab(flow_id, ci.CiConfig.Crontab.CrontabTime.Add(8*time.Hour),
+					models.NewCiCrontab().EnabledCiCrontab(flow_id, ci.CiConfig.Crontab.CrontabTime,
 						0)
 				}
 			}
