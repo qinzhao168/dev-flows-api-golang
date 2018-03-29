@@ -537,34 +537,34 @@ func (cf *CiFlowsController) UpdateCIRules() {
 		return
 	}
 
-	if ci.Enabled == 1 {
-		go func() {
-			//repoType:SVN GIT
-			ciFlow, err := models.NewCiFlows().FindFlowByIdCrab(stageInfo.FlowId)
-			if err != nil {
-				glog.Errorf("%s failed:%v\n", method, err)
-			}
-			//open
-			if ci.CiConfig.Crontab.Enabled == 1 {
+	//if ci.Enabled == 1 {
+	go func() {
+		//repoType:SVN GIT
+		ciFlow, err := models.NewCiFlows().FindFlowByIdCrab(stageInfo.FlowId)
+		if err != nil {
+			glog.Errorf("%s failed:%v\n", method, err)
+		}
+		//open
+		if ci.CiConfig.Crontab.Enabled == 1 {
 
-				if EnnCrontab.Exist(flow_id) {
-					EnnCrontab.Remove(EnnCrontab.GetCrontabId(flow_id))
-				}
-
-				EnnCrontab.RunCrontab(ciFlow, ci.CiConfig.Crontab.CrontabTime, ci.CiConfig.Crontab.RepoType, ci.CiConfig.Crontab.Branch)
-
-				//close
-			} else {
-				if EnnCrontab.Exist(flow_id) {
-					EnnCrontab.Remove(EnnCrontab.GetCrontabId(flow_id))
-					EnnCrontab.DeleteIdToMap(flow_id)
-					models.NewCiCrontab().EnabledCiCrontab(flow_id, ci.CiConfig.Crontab.CrontabTime,
-						0)
-				}
+			if EnnCrontab.Exist(flow_id) {
+				EnnCrontab.Remove(EnnCrontab.GetCrontabId(flow_id))
 			}
 
-		}()
-	}
+			EnnCrontab.RunCrontab(ciFlow, ci.CiConfig.Crontab.CrontabTime, ci.CiConfig.Crontab.RepoType, ci.CiConfig.Crontab.Branch)
+
+			//close
+		} else {
+			if EnnCrontab.Exist(flow_id) {
+				EnnCrontab.Remove(EnnCrontab.GetCrontabId(flow_id))
+				EnnCrontab.DeleteIdToMap(flow_id)
+				models.NewCiCrontab().EnabledCiCrontab(flow_id, ci.CiConfig.Crontab.CrontabTime,
+					0)
+			}
+		}
+
+	}()
+	//}
 
 	type Result struct {
 		StageId string `json:"stageId"`
