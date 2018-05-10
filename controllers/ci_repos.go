@@ -269,21 +269,22 @@ func (cirepo *CiReposController) AddRepository() {
 		}
 	}
 
-	var userInfos []coderepo.UserInfo
-	//TODO, use the user/org later auth
-	if depot.UserInfo != "" {
-		err = json.Unmarshal([]byte(depot.UserInfo), &userInfos)
-		if err != nil {
-			glog.Errorf(" %s json Unmarshal failed===>: %v\n", method, err)
-			cirepo.ResponseErrorAndCode("json Unmarshal failed", 501)
-			return
-		}
-		glog.V(1).Infof("User < %s > Is already authorized.", cirepo.Namespace)
-		cirepo.ResponseMessageAndResultAndStatusDevops(userInfos, fmt.Sprintf("User < %s > Is already authorized.", cirepo.Namespace),
-			http.StatusOK)
-
-		return
-	}
+	//var userInfos []coderepo.UserInfo
+	////TODO, use the user/org later auth
+	//if depot.UserInfo != "" {
+	//	err = json.Unmarshal([]byte(depot.UserInfo), &userInfos)
+	//	if err != nil {
+	//		glog.Errorf(" %s json Unmarshal failed===>: %v\n", method, err)
+	//		cirepo.ResponseErrorAndCode("json Unmarshal failed", 501)
+	//		return
+	//	}
+	//	glog.V(1).Infof("User < %s > Is already authorized.", cirepo.Namespace)
+	//	cirepo.ResponseMessageAndResultAndStatusDevops(userInfos, fmt.Sprintf("User < %s > Is already authorized.", cirepo.Namespace),
+	//		http.StatusOK)
+	//
+	//	return
+	//}
+	
 	//depo exist but user_info is empty will delete data from database
 	if depot != nil {
 		depot.DeleteOneRepo(cirepo.Namespace, models.DepotToRepoType(repoType))
@@ -431,6 +432,13 @@ func (cirepo *CiReposController) SyncRepos() {
 		cirepo.ResponseErrorAndCode(" 同步代码仓库失败:"+fmt.Sprintf("%s", err), http.StatusInternalServerError)
 		return
 	}
+
+	if len(repositrys) == 0 {
+		glog.Errorf("%s get all user repos failed===>: %v\n", method, err)
+		cirepo.ResponseErrorAndCode(" 同步代码仓库失败:"+fmt.Sprintf("%s", err), http.StatusInternalServerError)
+		return
+	}
+
 	var repoList string
 
 	if repoType == GOGS || repoType == GITHUB {
