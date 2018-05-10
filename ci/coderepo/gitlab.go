@@ -174,9 +174,9 @@ func (g *GitlabClient) GetAllUsersRepos(userinfos []UserInfo) ([]ReposGitHubAndG
 	if err != nil {
 		return repos, err
 	}
-	glog.Infof("gitlab projects=%s\n", projects)
+	glog.Infof("gitlab projects=%v\n", projects)
 	for _, project := range projects {
-		glog.Infof("gitlab project=%s\n", project)
+		glog.Infof("gitlab project=%v\n", project)
 		repo.CloneUrl = project.HttpRepoUrl
 		repo.Description = project.Description
 		repo.Name = project.NameWithNamespace
@@ -184,12 +184,17 @@ func (g *GitlabClient) GetAllUsersRepos(userinfos []UserInfo) ([]ReposGitHubAndG
 		repo.ProjectId = project.Id
 		repo.SshUrl = project.SshRepoUrl
 		repo.Url = project.Url
-		repo.Owner.Id = project.Owner.Id
-		repo.Owner.Name = project.Owner.Name
-		repo.Owner.Username = project.Owner.Username
-		repo.Owner.WebUrl = project.Owner.WebUrl
-		repo.Owner.State = project.Owner.State
-		repo.Owner.Avatar_url = project.Owner.AvatarUrl
+		if project.Owner != nil {
+
+			repo.Owner.Id = project.Owner.Id
+			repo.Owner.Name = project.Owner.Name
+			repo.Owner.Username = project.Owner.Username
+			repo.Owner.WebUrl = project.Owner.WebUrl
+			repo.Owner.State = project.Owner.State
+			repo.Owner.Avatar_url = project.Owner.AvatarUrl
+
+		}
+
 		repos = append(repos, repo)
 	}
 
