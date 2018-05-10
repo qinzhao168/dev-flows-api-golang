@@ -284,7 +284,7 @@ func (cirepo *CiReposController) AddRepository() {
 	//
 	//	return
 	//}
-	
+
 	//depo exist but user_info is empty will delete data from database
 	if depot != nil {
 		depot.DeleteOneRepo(cirepo.Namespace, models.DepotToRepoType(repoType))

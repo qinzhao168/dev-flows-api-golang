@@ -174,8 +174,9 @@ func (g *GitlabClient) GetAllUsersRepos(userinfos []UserInfo) ([]ReposGitHubAndG
 	if err != nil {
 		return repos, err
 	}
-
+	glog.Infof("gitlab projects=%s\n", projects)
 	for _, project := range projects {
+		glog.Infof("gitlab project=%s\n", project)
 		repo.CloneUrl = project.HttpRepoUrl
 		repo.Description = project.Description
 		repo.Name = project.NameWithNamespace
