@@ -350,7 +350,7 @@ func (cirepo *CiReposController) AddRepository() {
 		repositrys, err := repoApi.GetAllUsersRepos(userInfo)
 		if err != nil {
 			glog.Errorf(" %s get all user repos failed: %v\n", method, err)
-			cirepo.ResponseErrorAndCode(" 同步代码仓库失败:"+fmt.Sprintf("%s", err), http.StatusInternalServerError)
+			cirepo.ResponseErrorAndCode("同步代码仓库失败:目前您的账号下还没有代码项目,请先创建代码项目再进行关联", http.StatusConflict)
 			return
 		}
 		var repoList string
