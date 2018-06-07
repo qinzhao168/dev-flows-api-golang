@@ -1,0 +1,580 @@
+1.获取某个空间下的EnnFlow
+methed:GET
+request headers 信息:
+teamspace:fnw-test
+username:wangzhej
+Authorization:token ewqccvbwhtbqwowrgaywgnpvnawpaajbkgixzwmwsjuqiflx
+url:https://paas.enncloud.cn:38090/api/v2/devops/ci-flows?isBuildImage=0
+
+response info:
+
+{
+  "status": 200,
+  "total": 21,
+  "results": [
+    {
+      "flow_id": "CIFID-A8X23SzdU9K6", //flow_id 请求部署日志要用到
+      "name": "fefn-maintain",
+      "owner": "sunxiaoqing",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-06-06T11:48:53+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-06-06 11:53:22",
+      "status": 0,
+      "last_build_id": "FBID-b7NcMCFuwHLN",
+      "is_build_image": 0,
+      "stages_count": 1,
+      "project_id": "MPID-pWau4TXnoJH9",
+      "repo_type": "gogs",
+      "default_branch": "develop",
+      "address": "git@source.enncloud.cn:FN-F2E/FN-operation.git",
+      "buildInfo": "{\"DockerfileFrom\":2,\"DockerfileName\":\"Dockerfile\",\"DockerfilePath\":\"/\",\"image\":\"fefn-operation\",\"imageTagType\":2,\"noCache\":false,\"project\":\"debian\",\"projectId\":235,\"registryType\":1}",
+      "image": "fefn-operation"
+    },
+    {
+      "flow_id": "CIFID-4GEMmttjzJZi",
+      "name": "fe-operation-restruct",
+      "owner": "sunxiaoqing",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-06-04T11:16:54+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-06-05 16:37:03",
+      "status": 0,
+      "last_build_id": "FBID-Zp87oNpbDuTh",
+      "is_build_image": 0,
+      "stages_count": 1,
+      "project_id": "MPID-VwcUDYL7Uai6",
+      "repo_type": "gogs",
+      "default_branch": "dev",
+      "address": "https://source.enncloud.cn/sunxiaoqing/fe-fnw-operation.git",
+      "buildInfo": "{\"DockerfileFrom\":2,\"DockerfileName\":\"Dockerfile\",\"DockerfilePath\":\"/\",\"image\":\"fe-operation-restruct\",\"imageTagType\":2,\"noCache\":false,\"project\":\"fnw\",\"projectId\":230,\"registryType\":1}",
+      "image": "fe-operation-restruct"
+    },
+    {
+      "flow_id": "CIFID-NALzVxdepnwZ",
+      "name": "fe-test-maintain-628",
+      "owner": "sunxiaoqing",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-05-28T13:09:31+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-06-06 16:06:37",
+      "status": 0,
+      "last_build_id": "FBID-vzSWkfXfy7hA",
+      "is_build_image": 0,
+      "stages_count": 1,
+      "project_id": "MPID-2rhERiZM54kE",
+      "repo_type": "gogs",
+      "default_branch": "dev",
+      "address": "https://source.enncloud.cn/sunxiaoqing/fe-fnw-maintain.git",
+      "buildInfo": "{\"DockerfileFrom\":2,\"DockerfileName\":\"Dockerfile\",\"DockerfilePath\":\"/\",\"image\":\"fe-test-maintain-628\",\"imageTagType\":2,\"noCache\":false,\"project\":\"fnw\",\"projectId\":230,\"registryType\":1}",
+      "image": "fe-test-maintain-628"
+    },
+    {
+      "flow_id": "CIFID-hyrZGNDazFKx",
+      "name": "fe-test-index-628",
+      "owner": "sunxiaoqing",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-05-25T14:31:55+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-05-25 14:33:53",
+      "status": 0,
+      "last_build_id": "FBID-6XNz6AVnqiX9",
+      "is_build_image": 0,
+      "stages_count": 1,
+      "project_id": "MPID-AHLdw69FxYyf",
+      "repo_type": "gogs",
+      "default_branch": "dev",
+      "address": "https://source.enncloud.cn/sunxiaoqing/fe-fnw-index.git",
+      "buildInfo": "{\"DockerfileFrom\":2,\"DockerfileName\":\"Dockerfile\",\"DockerfilePath\":\"/\",\"image\":\"fe-test-index-628\",\"imageTagType\":2,\"noCache\":false,\"project\":\"fnw\",\"projectId\":230,\"registryType\":1}",
+      "image": "fe-test-index-628"
+    },
+    {
+      "flow_id": "CIFID-QyK4oVTt6gMr",
+      "name": "fe-test-energy-628",
+      "owner": "sunxiaoqing",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-05-24T17:02:14+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-06-05 21:37:14",
+      "status": 0,
+      "last_build_id": "FBID-NHDiyy6Zrugk",
+      "is_build_image": 0,
+      "stages_count": 1,
+      "project_id": "MPID-DmdGXjxizWfk",
+      "repo_type": "gogs",
+      "default_branch": "preprod",
+      "address": "https://source.enncloud.cn/sunxiaoqing/fe-fnw-energy.git",
+      "buildInfo": "{\"DockerfileFrom\":2,\"DockerfileName\":\"Dockerfile\",\"DockerfilePath\":\"/\",\"customTag\":\"v15pre0605\",\"image\":\"fe-test-energy-628\",\"imageTagType\":3,\"noCache\":false,\"project\":\"fnw\",\"projectId\":230,\"registryType\":1}",
+      "image": "fe-test-energy-628"
+    },
+    {
+      "flow_id": "CIFID-bkSn4LUd84R4",
+      "name": "prod-fnw-maintain",
+      "owner": "sunxiaoqing",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-05-15T16:28:26+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-05-31 19:41:13",
+      "status": 0,
+      "last_build_id": "FBID-8bQdKhfhDy5Y",
+      "is_build_image": 0,
+      "stages_count": 1,
+      "project_id": "MPID-2rhERiZM54kE",
+      "repo_type": "gogs",
+      "default_branch": "yw",
+      "address": "https://source.enncloud.cn/sunxiaoqing/fe-fnw-maintain.git",
+      "buildInfo": "{\"DockerfileFrom\":2,\"DockerfileName\":\"Dockerfile\",\"DockerfilePath\":\"/\",\"customTag\":\"release-0531\",\"image\":\"prod-fnw-maintain\",\"imageTagType\":3,\"noCache\":false,\"project\":\"fnw\",\"projectId\":230,\"registryType\":1}",
+      "image": "prod-fnw-maintain"
+    },
+    {
+      "flow_id": "CIFID-uCVYAP7ZSQBX",
+      "name": "pre-fnw-index",
+      "owner": "sunxiaoqing",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-05-15T09:11:46+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-05-23 22:27:30",
+      "status": 0,
+      "last_build_id": "FBID-oTK2WAcPg2Ff",
+      "is_build_image": 0,
+      "stages_count": 1,
+      "project_id": "MPID-AHLdw69FxYyf",
+      "repo_type": "gogs",
+      "default_branch": "preprod",
+      "address": "https://source.enncloud.cn/sunxiaoqing/fe-fnw-index.git",
+      "buildInfo": "{\"DockerfileFrom\":2,\"DockerfileName\":\"Dockerfile\",\"DockerfilePath\":\"/\",\"image\":\"pre-fnw-index\",\"imageTagType\":2,\"noCache\":false,\"project\":\"fnw\",\"projectId\":230,\"registryType\":1}",
+      "image": "pre-fnw-index"
+    },
+    {
+      "flow_id": "CIFID-R3hFMHonBPEa",
+      "name": "manage-vue",
+      "owner": "zhengxcb",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-05-14T20:59:05+08:00",
+      "update_time": null,
+      "last_build_time": null,
+      "status": null,
+      "last_build_id": null,
+      "is_build_image": 0,
+      "stages_count": 0,
+      "project_id": "",
+      "repo_type": "",
+      "default_branch": "",
+      "address": "",
+      "buildInfo": "",
+      "image": "pre-fnw-index"
+    },
+    {
+      "flow_id": "CIFID-74qNi3WLRrSq",
+      "name": "test-fnw-index-front",
+      "owner": "sunxiaoqing",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-05-11T10:55:47+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-05-14 17:48:28",
+      "status": 0,
+      "last_build_id": "FBID-aYKYm8KzccHc",
+      "is_build_image": 0,
+      "stages_count": 1,
+      "project_id": "MPID-AHLdw69FxYyf",
+      "repo_type": "gogs",
+      "default_branch": "dev",
+      "address": "https://source.enncloud.cn/sunxiaoqing/fe-fnw-index.git",
+      "buildInfo": "{\"DockerfileFrom\":2,\"DockerfileName\":\"Dockerfile\",\"DockerfilePath\":\"/\",\"image\":\"test-fnw-index-front\",\"imageTagType\":2,\"noCache\":false,\"project\":\"fnw\",\"projectId\":230,\"registryType\":1}",
+      "image": "test-fnw-index-front"
+    },
+    {
+      "flow_id": "CIFID-Kfx5f3jKSYsH",
+      "name": "test-fnw-maintain-front",
+      "owner": "sunxiaoqing",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-05-05T22:11:51+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-05-18 14:12:01",
+      "status": 0,
+      "last_build_id": "FBID-zoq5p5vYaP2G",
+      "is_build_image": 0,
+      "stages_count": 1,
+      "project_id": "MPID-2rhERiZM54kE",
+      "repo_type": "gogs",
+      "default_branch": "yw",
+      "address": "https://source.enncloud.cn/sunxiaoqing/fe-fnw-maintain.git",
+      "buildInfo": "{\"DockerfileFrom\":2,\"DockerfileName\":\"Dockerfile\",\"DockerfilePath\":\"/\",\"image\":\"test-fnw-maintain-front\",\"imageTagType\":2,\"noCache\":false,\"project\":\"fnw\",\"projectId\":230,\"registryType\":1}",
+      "image": "test-fnw-maintain-front"
+    },
+    {
+      "flow_id": "CIFID-2PaD6LYEUJv5",
+      "name": "operation-provider-data",
+      "owner": "zhouyug",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-04-26T14:44:28+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-05-23 15:22:41",
+      "status": 0,
+      "last_build_id": "FBID-DA857oTMXhpE",
+      "is_build_image": 0,
+      "stages_count": 2,
+      "project_id": "MPID-6RCKmvAXMR6K",
+      "repo_type": "gogs",
+      "default_branch": "master",
+      "address": "https://source.enncloud.cn/operation_dev/operation-enn-cloud.git",
+      "buildInfo": "{\"DockerfileFrom\":2,\"DockerfileName\":\"Dockerfile\",\"DockerfilePath\":\"/\",\"image\":\"operation-provider-data\",\"imageTagType\":2,\"noCache\":false,\"project\":\"operation\",\"projectId\":237,\"registryType\":1}",
+      "image": "operation-provider-data"
+    },
+    {
+      "flow_id": "CIFID-BoU57HRQkcJw",
+      "name": "operation-provider-equipment",
+      "owner": "zhouyug",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-04-26T12:59:54+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-05-28 16:47:26",
+      "status": 0,
+      "last_build_id": "FBID-FoqZrVHx8N5u",
+      "is_build_image": 0,
+      "stages_count": 2,
+      "project_id": "MPID-6RCKmvAXMR6K",
+      "repo_type": "gogs",
+      "default_branch": "master",
+      "address": "https://source.enncloud.cn/operation_dev/operation-enn-cloud.git",
+      "buildInfo": "{\"DockerfileFrom\":2,\"DockerfileName\":\"Dockerfile\",\"DockerfilePath\":\"/\",\"image\":\"operation-provider-equipment\",\"imageTagType\":2,\"noCache\":false,\"project\":\"operation\",\"projectId\":237,\"registryType\":1}",
+      "image": "operation-provider-equipment"
+    },
+    {
+      "flow_id": "CIFID-ULzZCndPCeVG",
+      "name": "uac",
+      "owner": "cuidongdong",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-04-19T17:41:02+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-04-20 17:34:55",
+      "status": 0,
+      "last_build_id": "FBID-bJTSTqr4px2R",
+      "is_build_image": 0,
+      "stages_count": 2,
+      "project_id": "MPID-VEJ4YijKTzGr",
+      "repo_type": "gogs",
+      "default_branch": "test",
+      "address": "git@source.enncloud.cn:iCom/uac.git",
+      "buildInfo": "{\"DockerfileFrom\":2,\"DockerfileName\":\"Dockerfile\",\"DockerfilePath\":\"/\",\"customTag\":\"1.0.0\",\"image\":\"uac\",\"imageTagType\":3,\"noCache\":false,\"project\":\"uac\",\"projectId\":233,\"registryType\":1}",
+      "image": "uac"
+    },
+    {
+      "flow_id": "CIFID-V9RpAUzLQbFx",
+      "name": "abvcd",
+      "owner": "liufangkun",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-04-18T15:09:46+08:00",
+      "update_time": null,
+      "last_build_time": null,
+      "status": null,
+      "last_build_id": null,
+      "is_build_image": 0,
+      "stages_count": 0,
+      "project_id": "",
+      "repo_type": "",
+      "default_branch": "",
+      "address": "",
+      "buildInfo": "",
+      "image": "uac"
+    },
+    {
+      "flow_id": "CIFID-6dgfyxfWcfQf",
+      "name": "fnw-index",
+      "owner": "zhengxcb",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-04-04T10:33:59+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-04-18 15:36:31",
+      "status": 0,
+      "last_build_id": "FBID-MuHpRstjF2uo",
+      "is_build_image": 0,
+      "stages_count": 2,
+      "project_id": "",
+      "repo_type": "",
+      "default_branch": "",
+      "address": "",
+      "buildInfo": "{\"DockerfileFrom\":2,\"DockerfileName\":\"Dockerfile\",\"DockerfilePath\":\"/\",\"image\":\"fnw-index\",\"imageTagType\":2,\"noCache\":false,\"project\":\"fnw\",\"projectId\":230,\"registryType\":1}",
+      "image": "fnw-index"
+    },
+    {
+      "flow_id": "CIFID-Z6bPdZwCgw3U",
+      "name": "etsp-api-test",
+      "owner": "kongweiteng",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-04-04T09:51:41+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-04-18 14:49:33",
+      "status": 1,
+      "last_build_id": "FBID-n5oKo48qD87j",
+      "is_build_image": 0,
+      "stages_count": 2,
+      "project_id": "MPID-N5yYV8fUoGu7",
+      "repo_type": "gogs",
+      "default_branch": "master1",
+      "address": "git@source.enncloud.cn:ETSP/etsp-api.git",
+      "buildInfo": "",
+      "image": "fnw-index"
+    },
+    {
+      "flow_id": "CIFID-Hc4vW6HYEer5",
+      "name": "idea-regist",
+      "owner": "kongweiteng",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-03-30T17:25:13+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-03-30 17:31:32",
+      "status": 0,
+      "last_build_id": "FBID-mBxfYqcJ6TkX",
+      "is_build_image": 0,
+      "stages_count": 1,
+      "project_id": "MPID-ZoHcSXztApei",
+      "repo_type": "gogs",
+      "default_branch": "master",
+      "address": "git@source.enncloud.cn:ETSP/idea-regist.git",
+      "buildInfo": "{\"DockerfileFrom\":2,\"DockerfileName\":\"Dockerfile\",\"DockerfilePath\":\"/\",\"image\":\"idea-regist\",\"imageTagType\":2,\"noCache\":false,\"project\":\"etsp\",\"projectId\":164,\"registryType\":1}",
+      "image": "idea-regist"
+    },
+    {
+      "flow_id": "CIFID-3P42H8UbLxxW",
+      "name": "enn_doc_node",
+      "owner": "liufangkun",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-03-30T17:17:44+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-03-31 00:42:50",
+      "status": 0,
+      "last_build_id": "FBID-DmssH3odUZ8F",
+      "is_build_image": 0,
+      "stages_count": 2,
+      "project_id": "MPID-T279m2jQVmz8",
+      "repo_type": "gogs",
+      "default_branch": "master",
+      "address": "git@source.enncloud.cn:fnw/enn_doc.git",
+      "buildInfo": "",
+      "image": "idea-regist"
+    },
+    {
+      "flow_id": "CIFID-e2RZ8mACXHJg",
+      "name": "enn_doc_nginx",
+      "owner": "zhengxcb",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-03-30T11:14:25+08:00",
+      "update_time": "2018-03-30T17:17:34+08:00",
+      "last_build_time": "2018-04-18 14:58:51",
+      "status": 1,
+      "last_build_id": "FBID-G7YkTwe6jimp",
+      "is_build_image": 0,
+      "stages_count": 2,
+      "project_id": "",
+      "repo_type": "",
+      "default_branch": "",
+      "address": "",
+      "buildInfo": "{\"DockerfileFrom\":2,\"DockerfileName\":\"Dockerfile\",\"DockerfilePath\":\"/\",\"image\":\"fnw-api-web\",\"imageTagType\":2,\"noCache\":false,\"project\":\"ennwifi-test\",\"projectId\":141,\"registryType\":1}",
+      "image": "fnw-api-web"
+    },
+    {
+      "flow_id": "CIFID-ffaXWMFBCnU3",
+      "name": "dataservice-test",
+      "owner": "zhangboad",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-03-29T14:57:53+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-03-29 18:28:52",
+      "status": 0,
+      "last_build_id": "FBID-UZfd3VsALkzG",
+      "is_build_image": 0,
+      "stages_count": 2,
+      "project_id": "MPID-UtsrQTPaLTnk",
+      "repo_type": "gogs",
+      "default_branch": "master",
+      "address": "https://source.enncloud.cn/operation_dev/dataservice.git",
+      "buildInfo": "{\"DockerfileFrom\":1,\"DockerfileName\":\"Dockerfile\",\"DockerfilePath\":\"/docker/\",\"image\":\"dataservice\",\"imageTagType\":1,\"noCache\":false,\"project\":\"fnw-test\",\"projectId\":226,\"registryType\":1}",
+      "image": "dataservice"
+    },
+    {
+      "flow_id": "CIFID-qJwXgKr2R5Sb",
+      "name": "operation-test",
+      "owner": "zhangboad",
+      "namespace": "fnw-test",
+      "init_type": 1,
+      "create_time": "2018-03-29T13:58:11+08:00",
+      "update_time": "0001-01-01T00:00:00Z",
+      "last_build_time": "2018-05-22 14:35:42",
+      "status": 0,
+      "last_build_id": "FBID-Ex5cY44t2cjM",
+      "is_build_image": 0,
+      "stages_count": 2,
+      "project_id": "MPID-RvpC3r6DN6R7",
+      "repo_type": "gogs",
+      "default_branch": "master",
+      "address": "https://source.enncloud.cn/operation_dev/operation.git",
+      "buildInfo": "{\"DockerfileFrom\":1,\"DockerfileName\":\"Dockerfile\",\"DockerfilePath\":\"/docker/\",\"image\":\"operation\",\"imageTagType\":1,\"noCache\":false,\"project\":\"fnw-test\",\"projectId\":226,\"registryType\":1}",
+      "image": "operation"
+    }
+  ]
+}
+
+2.获取某个EnnFlow的部署日志(需要开启CD服务，也就是配置CD规则)
+methed:GET
+request headers 信息:
+teamspace:fnw-test
+username:wangzhej
+Authorization:token ewqccvbwhtbqwowrgaywgnpvnawpaajbkgixzwmwsjuqiflx
+
+url: https://paas.enncloud.cn:38090/api/v2/devops/ci-flows/:flow_id/deployment-logs
+
+注意 :flow_id 这个参数 由上一个请求获取
+
+没有部署记录时返回
+{
+  "status": 200,
+  "message": "No CD rule created for now"
+}
+有部署日志记录时返回(例子)
+{
+  "status": 200,
+  "total": 10,
+  "results": [
+    {
+      "app_name": "gitlab-service", //部署的服务名称
+      "image_name": "newcicd/gitlab-image-local",//部署的镜像名称
+      "target_version": "20180321.154417.3",//部署的镜像版本
+      "cluster_name": "测试集群",
+      "upgrade_strategy": 1,
+      "result": {
+        "status": 2,
+        "duration": "4 ms"
+      },
+      "create_time": "2018-03-21 15:44:26" //部署时间 根据时间判断是否是同一部署记录(目前没有提供ID)
+    },
+    {
+      "app_name": "gitlab-service",
+      "image_name": "newcicd/gitlab-image-local",
+      "target_version": "20180319.090805.61",
+      "cluster_name": "测试集群",
+      "upgrade_strategy": 1,
+      "result": {
+        "status": 2,
+        "duration": "4 ms"
+      },
+      "create_time": "2018-03-19 09:08:24"
+    },
+    {
+      "app_name": "gitlab-service",
+      "image_name": "newcicd/gitlab-image-local",
+      "target_version": "20180316.210925.83",
+      "cluster_name": "测试集群",
+      "upgrade_strategy": 1,
+      "result": {
+        "status": 2,
+        "duration": "5 ms"
+      },
+      "create_time": "2018-03-16 21:09:37"
+    },
+    {
+      "app_name": "gitlab-service",
+      "image_name": "newcicd/gitlab-image-local",
+      "target_version": "20180316.201601.77",
+      "cluster_name": "测试集群",
+      "upgrade_strategy": 1,
+      "result": {
+        "status": 2,
+        "duration": "4 ms"
+      },
+      "create_time": "2018-03-16 20:16:18"
+    },
+    {
+      "app_name": "gitlab-service",
+      "image_name": "newcicd/gitlab-image-local",
+      "target_version": "20180316.200449.86",
+      "cluster_name": "测试集群",
+      "upgrade_strategy": 1,
+      "result": {
+        "status": 2,
+        "duration": "5 ms"
+      },
+      "create_time": "2018-03-16 20:04:58"
+    },
+    {
+      "app_name": "gitlab-service",
+      "image_name": "newcicd/gitlab-image-local",
+      "target_version": "20180316.170924.24",
+      "cluster_name": "测试集群",
+      "upgrade_strategy": 1,
+      "result": {
+        "status": 2,
+        "duration": "14 ms"
+      },
+      "create_time": "2018-03-16 17:10:19"
+    },
+    {
+      "app_name": "gitlab-service",
+      "image_name": "newcicd/gitlab-image-local",
+      "target_version": "20180316.161602.08",
+      "cluster_name": "测试集群",
+      "upgrade_strategy": 1,
+      "result": {
+        "status": 2,
+        "duration": "5 ms"
+      },
+      "create_time": "2018-03-16 16:16:59"
+    },
+    {
+      "app_name": "gitlab-service",
+      "image_name": "newcicd/gitlab-image-local",
+      "target_version": "20180316.160315.87",
+      "cluster_name": "测试集群",
+      "upgrade_strategy": 1,
+      "result": {
+        "status": 2,
+        "duration": "5 ms"
+      },
+      "create_time": "2018-03-16 16:05:08"
+    },
+    {
+      "app_name": "gitlab-service",
+      "image_name": "newcicd/gitlab-image-local",
+      "target_version": "20180316.152101.03",
+      "cluster_name": "测试集群",
+      "upgrade_strategy": 1,
+      "result": {
+        "status": 2,
+        "duration": "5 ms"
+      },
+      "create_time": "2018-03-16 15:21:16"
+    },
+    {
+      "app_name": "gitlab-service",
+      "image_name": "newcicd/gitlab-image-local",
+      "target_version": "20180316.134549.29",
+      "cluster_name": "测试集群",
+      "upgrade_strategy": 1,
+      "result": {
+        "status": 2,
+        "duration": "9 ms"
+      },
+      "create_time": "2018-03-16 13:46:37"
+    }
+  ]
+}

@@ -1110,6 +1110,8 @@ func (cf *CiFlowsController) CreateCDRule() {
 	newRuleInfo.MatchTag = cdRuleReq.Match_tag
 	newRuleInfo.Enabled = 1
 	newRuleInfo.MinReadySeconds = cdRuleReq.MinReadySeconds
+	newRuleInfo.InvokeUrl = cdRuleReq.InvokeUrl
+	newRuleInfo.InvokeMethod = cdRuleReq.InvokeMethod
 
 	glog.Infof("%s newRuleInfo.RuleId=%s \n", method, newRuleInfo.RuleId)
 	res, err := cdRule.CreateOneRule(newRuleInfo)
@@ -1198,7 +1200,8 @@ func (cf *CiFlowsController) UpdateCDRule() {
 	cdRule.MatchTag = cdRuleReq.Match_tag
 	cdRule.UpgradeStrategy = cdRuleReq.Upgrade_strategy
 	cdRule.MinReadySeconds = cdRuleReq.MinReadySeconds
-
+	cdRule.InvokeMethod = cdRuleReq.InvokeMethod
+	cdRule.InvokeUrl = cdRuleReq.InvokeUrl
 	updateResult, err := models.NewCdRules().UpdateCDRule(namespace, flowId, ruleId, cdRule)
 	if err != nil {
 		parseResult, _ := sqlstatus.ParseErrorCode(err)

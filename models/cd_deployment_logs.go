@@ -48,6 +48,8 @@ type NewDeploymentArray struct {
 	Match_tag           string //是否匹配规则
 	Start_time          time.Time
 	MinReadySeconds     int32
+	InvokeMethod        string
+	InvokeUrl           string
 }
 
 func (cd *CDDeploymentLogs) TableName() string {

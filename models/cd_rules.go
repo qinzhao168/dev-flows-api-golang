@@ -22,6 +22,8 @@ type CDRules struct {
 	UpdateTime            time.Time `orm:"column(update_time)" json:"update_time"`
 	Tag                   string `orm:"column(tag)" json:"tag,omitempty"`
 	MinReadySeconds       int32 `orm:"column(min_ready_seconds)" json:"min_ready_seconds"`
+	InvokeMethod          string `orm:"column(invoke_method)" json:"invoke_method"`
+	InvokeUrl             string `orm:"column(invoke_url)" json:"invoke_url"`
 }
 
 type CdRuleReq struct {
@@ -31,6 +33,8 @@ type CdRuleReq struct {
 	Upgrade_strategy int8 `json:"upgrade_strategy"`
 	MinReadySeconds  int32 `json:"min_ready_seconds"`
 	Binding_service  Binding_service `json:"binding_service"`
+	InvokeMethod     string `json:"invoke_method"`
+	InvokeUrl        string `json:"invoke_url"`
 }
 
 type Binding_service struct {
@@ -115,7 +119,7 @@ func (cd *CDRules) UpdateCDRule(namespace, flow_id, rule_id string, rule CDRules
 	}
 
 	return o.Update(&rule, "update_time", "binding_cluster_id", "binding_deployment_id", "binding_deployment_name",
-		"image_name", "flow_id", "upgrade_strategy", "match_tag", "min_ready_seconds")
+		"image_name", "flow_id", "upgrade_strategy", "match_tag", "min_ready_seconds", "invoke_method", "invoke_url")
 }
 
 func (cd *CDRules) ListRulesByFlowId(namespace, flow_id string, orms ...orm.Ormer) (cdRules []CDRules, total int64, err error) {

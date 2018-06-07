@@ -12,6 +12,7 @@ import (
 	//"k8s.io/client-go/1.4/pkg/api/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sync"
+	"io"
 	"net/http"
 	"dev-flows-api-golang/util/uuid"
 )
@@ -21,6 +22,21 @@ var imageMaps ImageMaps
 type ImageMaps struct {
 	ImageMap        map[string]time.Time
 	ImageMapRWMutex sync.RWMutex
+}
+
+type InvokeBody struct {
+	ServerName      string `json:"server_name"`
+	DeploymentTime  time.Time `json:"deployment_time"`
+	DeploymentState string `json:"deployment_state"` //success failed
+}
+
+func (in *InvokeBody) Encode() string {
+
+	data, err := json.Marshal(in)
+	if err != nil {
+		glog.Errorf("json Encode failed:%v\n", err)
+	}
+	return string(data)
 }
 
 type InvokeCDController struct {
@@ -184,6 +200,16 @@ func (ic *InvokeCDController) NotificationHandler() {
 				detail.SendEmailUsingFlowConfig(cdrule.Namespace, cdrule.FlowId)
 				glog.Errorf("%s inertRes=%d %v\n", method, inertRes, err)
 				message = "InsertCDLog failed " + string(data)
+
+				if cdrule.InvokeMethod != "" && cdrule.InvokeUrl != "" {
+					InvokeBody := &InvokeBody{
+						ServerName:      deployment.ObjectMeta.Name,
+						DeploymentTime:  time.Now(),
+						DeploymentState: detail.Result,
+					}
+					HttpClientRequest(cdrule.InvokeMethod, cdrule.InvokeUrl, strings.NewReader(InvokeBody.Encode()), nil)
+				}
+				
 				ic.ResponseErrorAndCode(message, http.StatusConflict)
 				continue
 			}
@@ -195,6 +221,14 @@ func (ic *InvokeCDController) NotificationHandler() {
 				Body:    fmt.Sprintf(`校验持续集成规则时发生异常或者该服务已经停止`),
 			}
 			detail.SendEmailUsingFlowConfig(cdrule.Namespace, cdrule.FlowId)
+			if cdrule.InvokeMethod != "" && cdrule.InvokeUrl != "" {
+				InvokeBody := &InvokeBody{
+					ServerName:      deployment.ObjectMeta.Name,
+					DeploymentTime:  time.Now(),
+					DeploymentState: detail.Result,
+				}
+				HttpClientRequest(cdrule.InvokeMethod, cdrule.InvokeUrl, strings.NewReader(InvokeBody.Encode()), nil)
+			}
 			continue
 		}
 
@@ -209,6 +243,8 @@ func (ic *InvokeCDController) NotificationHandler() {
 		newDeployment.BindingDeploymentId = cdrule.BindingDeploymentId
 		newDeployment.Start_time = start_time
 		newDeployment.MinReadySeconds = cdrule.MinReadySeconds
+		newDeployment.InvokeMethod = cdrule.InvokeMethod
+		newDeployment.InvokeUrl = cdrule.InvokeUrl
 		newDeploymentArray = append(newDeploymentArray, newDeployment)
 
 	}
@@ -278,6 +314,15 @@ func (ic *InvokeCDController) NotificationHandler() {
 					}
 					detail.SendEmailUsingFlowConfig(dep.Namespace, dep.Flow_id)
 					glog.Errorf("%s insert deployment log failed: inertRes=%d, err:%v\n", method, inertRes, err)
+
+					if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
+						InvokeBody := &InvokeBody{
+							ServerName:      dp.ObjectMeta.Name,
+							DeploymentTime:  time.Now(),
+							DeploymentState: detail.Result,
+						}
+						HttpClientRequest(dep.InvokeMethod, dep.InvokeUrl, strings.NewReader(InvokeBody.Encode()), nil)
+					}
 					continue
 				}
 
@@ -288,6 +333,17 @@ func (ic *InvokeCDController) NotificationHandler() {
 					Body:    fmt.Sprintf(`更新服务时发生异常:%v`, err),
 				}
 				detail.SendEmailUsingFlowConfig(dep.Namespace, dep.Flow_id)
+
+				if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
+					InvokeBody := &InvokeBody{
+						ServerName:      dp.ObjectMeta.Name,
+						DeploymentTime:  time.Now(),
+						DeploymentState: detail.Result,
+					}
+					HttpClientRequest(dep.InvokeMethod, dep.InvokeUrl, strings.NewReader(InvokeBody.Encode()), nil)
+				}
+
+				//通知 失败
 				continue
 			}
 
@@ -318,6 +374,15 @@ func (ic *InvokeCDController) NotificationHandler() {
 					dep.Deployment.ObjectMeta.Name, imageInfo.Fullname, imageInfo.Tag),
 			}
 			detail.SendEmailUsingFlowConfig(dep.Namespace, dep.Flow_id)
+			if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
+				InvokeBody := &InvokeBody{
+					ServerName:      dp.ObjectMeta.Name,
+					DeploymentTime:  time.Now(),
+					DeploymentState: detail.Result,
+				}
+				HttpClientRequest(dep.InvokeMethod, dep.InvokeUrl, strings.NewReader(InvokeBody.Encode()), nil)
+			}
+			//成功通知
 			continue
 		} else {
 			log.CdRuleId = dep.Rule_id
@@ -355,6 +420,15 @@ func (ic *InvokeCDController) NotificationHandler() {
 
 			detail.SendEmailUsingFlowConfig(dep.Namespace, dep.Flow_id)
 
+			if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
+				InvokeBody := &InvokeBody{
+					ServerName:      dep.Deployment.ObjectMeta.Name,
+					DeploymentTime:  time.Now(),
+					DeploymentState: detail.Result,
+				}
+				HttpClientRequest(dep.InvokeMethod, dep.InvokeUrl, strings.NewReader(InvokeBody.Encode()), nil)
+			}
+			//失败通知
 			continue
 		}
 
@@ -366,4 +440,34 @@ func (ic *InvokeCDController) NotificationHandler() {
 	imageMaps.ImageMapRWMutex.RUnlock()
 	ic.ResponseErrorAndCode("Continuous deployment completed successfully", http.StatusOK)
 	return
+}
+
+func HttpClientRequest(method, url string, body io.Reader, header map[string]string) (*http.Response, error) {
+
+	client := &http.Client{
+		Timeout: 30 * time.Second,
+	}
+
+	req, err := http.NewRequest(method, url, body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+
+	if len(header) != 0 {
+		for key, value := range header {
+			req.Header.Add(key, value)
+		}
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	resp.Header.Set("Content-Type", "application/json; charset=utf-8")
+
+	return resp, err
 }
