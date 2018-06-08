@@ -578,3 +578,13 @@ url: https://paas.enncloud.cn:38090/api/v2/devops/ci-flows/:flow_id/deployment-l
     }
   ]
 }
+
+//部署成功后回调路径:invoke_url
+//返回信息 method:POST 
+URL: http://192.168.10.111:9090/invoke/
+request body:
+{
+"server_name":"demo",//部署的服务名称
+"deployment_time":"2018-03-16 15:21:16",//部署时间
+"deployment_state":"success" //部署状态:success failed //灰度升级时 需要查看服务是否部署成功
+}

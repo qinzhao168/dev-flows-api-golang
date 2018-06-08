@@ -209,7 +209,7 @@ func (ic *InvokeCDController) NotificationHandler() {
 					}
 					HttpClientRequest(cdrule.InvokeMethod, cdrule.InvokeUrl, strings.NewReader(InvokeBody.Encode()), nil)
 				}
-				
+
 				ic.ResponseErrorAndCode(message, http.StatusConflict)
 				continue
 			}
@@ -442,15 +442,17 @@ func (ic *InvokeCDController) NotificationHandler() {
 	return
 }
 
-func HttpClientRequest(method, url string, body io.Reader, header map[string]string) (*http.Response, error) {
+func HttpClientRequest(method, url string, body io.Reader, header map[string]string) {
 
 	client := &http.Client{
 		Timeout: 30 * time.Second,
 	}
 
+	glog.Infof("HttpClientRequest info: url=%s, method:%s\n", url, method)
+
 	req, err := http.NewRequest(method, url, body)
 	if err != nil {
-		return nil, err
+		glog.Errorf("HttpClientRequest failed:", err)
 	}
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
@@ -464,10 +466,10 @@ func HttpClientRequest(method, url string, body io.Reader, header map[string]str
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return nil, err
+		glog.Errorf("client.Do HttpClientRequest failed:", err)
 	}
 
 	resp.Header.Set("Content-Type", "application/json; charset=utf-8")
 
-	return resp, err
+	defer resp.Body.Close()
 }
