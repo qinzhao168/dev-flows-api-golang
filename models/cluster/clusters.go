@@ -38,6 +38,7 @@ type ClusterModel struct {
 	SecretAccessKey string    `orm:"column(secret_access_key)" json:"secret_access_key"`
 	Content         string    `orm:"column(content)" json:"-"`
 	Type            int8      `orm:"column(type)" json:"type"` // 0 enncloud 1 huawei 2 aws ,default is 0
+	ESUrl           string     `orm:"column(es_url)" json:"-"`
 }
 
 const (
