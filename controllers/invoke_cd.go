@@ -28,7 +28,7 @@ type ImageMaps struct {
 }
 
 type InvokeBody struct {
-	ServerName      string `json:"server_name"`
+	AppName      string `json:"app_name"`
 	DeploymentTime  time.Time `json:"deployment_time"`
 	DeploymentState string `json:"deployment_state"` //success failed
 }
@@ -206,7 +206,7 @@ func (ic *InvokeCDController) NotificationHandler() {
 				if GetAppsStatus(k8sClient, deployment.Labels["tenxcloud.com/appName"], deployment.ObjectMeta.Namespace) {
 					if cdrule.InvokeMethod != "" && cdrule.InvokeUrl != "" {
 						InvokeBody := &InvokeBody{
-							ServerName:      deployment.ObjectMeta.Name,
+							AppName:      deployment.Labels["tenxcloud.com/appName"],
 							DeploymentTime:  time.Now(),
 							DeploymentState: detail.Result,
 						}
@@ -227,7 +227,7 @@ func (ic *InvokeCDController) NotificationHandler() {
 			if GetAppsStatus(k8sClient, deployment.Labels["tenxcloud.com/appName"], deployment.ObjectMeta.Namespace) {
 				if cdrule.InvokeMethod != "" && cdrule.InvokeUrl != "" {
 					InvokeBody := &InvokeBody{
-						ServerName:      deployment.ObjectMeta.Name,
+						AppName:      deployment.Labels["tenxcloud.com/appName"],
 						DeploymentTime:  time.Now(),
 						DeploymentState: detail.Result,
 					}
@@ -322,7 +322,7 @@ func (ic *InvokeCDController) NotificationHandler() {
 					if GetAppsStatus(k8sClient, dp.Labels["tenxcloud.com/appName"], dp.ObjectMeta.Namespace) {
 						if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
 							InvokeBody := &InvokeBody{
-								ServerName:      dp.ObjectMeta.Name,
+								AppName:     dp.Labels["tenxcloud.com/appName"],
 								DeploymentTime:  time.Now(),
 								DeploymentState: detail.Result,
 							}
@@ -343,7 +343,7 @@ func (ic *InvokeCDController) NotificationHandler() {
 				if GetAppsStatus(k8sClient, dp.Labels["tenxcloud.com/appName"], dp.ObjectMeta.Namespace) {
 					if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
 						InvokeBody := &InvokeBody{
-							ServerName:      dp.ObjectMeta.Name,
+							AppName:     dp.Labels["tenxcloud.com/appName"],
 							DeploymentTime:  time.Now(),
 							DeploymentState: detail.Result,
 						}
@@ -384,7 +384,7 @@ func (ic *InvokeCDController) NotificationHandler() {
 			if GetAppsStatus(k8sClient, dp.Labels["tenxcloud.com/appName"], dp.ObjectMeta.Namespace) {
 				if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
 					InvokeBody := &InvokeBody{
-						ServerName:      dp.ObjectMeta.Name,
+						AppName:      dp.Labels["tenxcloud.com/appName"],
 						DeploymentTime:  time.Now(),
 						DeploymentState: detail.Result,
 					}
@@ -432,7 +432,7 @@ func (ic *InvokeCDController) NotificationHandler() {
 			if GetAppsStatus(k8sClient, dep.Deployment.Labels["tenxcloud.com/appName"], dep.Deployment.ObjectMeta.Namespace) {
 				if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
 					InvokeBody := &InvokeBody{
-						ServerName:      dep.Deployment.ObjectMeta.Name,
+						AppName:      dep.Deployment.Labels["tenxcloud.com/appName"],
 						DeploymentTime:  time.Now(),
 						DeploymentState: detail.Result,
 					}
