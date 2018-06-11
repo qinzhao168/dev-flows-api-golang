@@ -14,6 +14,7 @@ import (
 	"sync"
 	"io"
 	"net/http"
+	"io/ioutil"
 	"dev-flows-api-golang/util/uuid"
 )
 
@@ -457,6 +458,12 @@ func HttpClientRequest(method, url string, body io.Reader, header map[string]str
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	dataReq, err := ioutil.ReadAll(req.Body)
+	if err != nil {
+		glog.Errorf("HttpClientRequest body info:  req.body:%s\n", string(dataReq))
+	}
+	
+	glog.Infof("HttpClientRequest body info:  req.body:%s\n", string(dataReq))
 
 	if len(header) != 0 {
 		for key, value := range header {
