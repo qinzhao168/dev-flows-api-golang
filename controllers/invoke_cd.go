@@ -204,7 +204,7 @@ func (ic *InvokeCDController) NotificationHandler() {
 				glog.Errorf("%s inertRes=%d %v\n", method, inertRes, err)
 				message = "InsertCDLog failed " + string(data)
 				if cdrule.InvokeMethod != "" && cdrule.InvokeUrl != "" {
-					if GetAppsStatus(k8sClient, deployment.Labels["tenxcloud.com/appName"], deployment.ObjectMeta.Namespace) {
+					if GetAppsStatus(k8sClient, deployment.Labels["tenxcloud.com/appName"], deployment.ObjectMeta.Namespace, deployment.ObjectMeta.Name) {
 						InvokeBody := &InvokeBody{
 							AppName:         deployment.Labels["tenxcloud.com/appName"],
 							DeploymentTime:  time.Now(),
@@ -225,7 +225,7 @@ func (ic *InvokeCDController) NotificationHandler() {
 			}
 			detail.SendEmailUsingFlowConfig(cdrule.Namespace, cdrule.FlowId)
 			if cdrule.InvokeMethod != "" && cdrule.InvokeUrl != "" {
-				if GetAppsStatus(k8sClient, deployment.Labels["tenxcloud.com/appName"], deployment.ObjectMeta.Namespace) {
+				if GetAppsStatus(k8sClient, deployment.Labels["tenxcloud.com/appName"], deployment.ObjectMeta.Namespace, deployment.ObjectMeta.Name) {
 					InvokeBody := &InvokeBody{
 						AppName:         deployment.Labels["tenxcloud.com/appName"],
 						DeploymentTime:  time.Now(),
@@ -320,7 +320,7 @@ func (ic *InvokeCDController) NotificationHandler() {
 					detail.SendEmailUsingFlowConfig(dep.Namespace, dep.Flow_id)
 					glog.Errorf("%s insert deployment log failed: inertRes=%d, err:%v\n", method, inertRes, err)
 					if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
-						if GetAppsStatus(k8sClient, dp.Labels["tenxcloud.com/appName"], dp.ObjectMeta.Namespace) {
+						if GetAppsStatus(k8sClient, dp.Labels["tenxcloud.com/appName"], dp.ObjectMeta.Namespace, dp.ObjectMeta.Name) {
 							InvokeBody := &InvokeBody{
 								AppName:         dp.Labels["tenxcloud.com/appName"],
 								DeploymentTime:  time.Now(),
@@ -340,7 +340,7 @@ func (ic *InvokeCDController) NotificationHandler() {
 				}
 				detail.SendEmailUsingFlowConfig(dep.Namespace, dep.Flow_id)
 				if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
-					if GetAppsStatus(k8sClient, dp.Labels["tenxcloud.com/appName"], dp.ObjectMeta.Namespace) {
+					if GetAppsStatus(k8sClient, dp.Labels["tenxcloud.com/appName"], dp.ObjectMeta.Namespace, dp.ObjectMeta.Name) {
 						InvokeBody := &InvokeBody{
 							AppName:         dp.Labels["tenxcloud.com/appName"],
 							DeploymentTime:  time.Now(),
@@ -381,7 +381,7 @@ func (ic *InvokeCDController) NotificationHandler() {
 			}
 			detail.SendEmailUsingFlowConfig(dep.Namespace, dep.Flow_id)
 			if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
-				if GetAppsStatus(k8sClient, dp.Labels["tenxcloud.com/appName"], dp.ObjectMeta.Namespace) {
+				if GetAppsStatus(k8sClient, dp.Labels["tenxcloud.com/appName"], dp.ObjectMeta.Namespace, dp.ObjectMeta.Name) {
 					InvokeBody := &InvokeBody{
 						AppName:         dp.Labels["tenxcloud.com/appName"],
 						DeploymentTime:  time.Now(),
@@ -428,7 +428,7 @@ func (ic *InvokeCDController) NotificationHandler() {
 
 			detail.SendEmailUsingFlowConfig(dep.Namespace, dep.Flow_id)
 			if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
-				if GetAppsStatus(k8sClient, dep.Deployment.Labels["tenxcloud.com/appName"], dep.Deployment.ObjectMeta.Namespace) {
+				if GetAppsStatus(k8sClient, dep.Deployment.Labels["tenxcloud.com/appName"], dep.Deployment.ObjectMeta.Namespace, dep.Deployment.ObjectMeta.Name) {
 					InvokeBody := &InvokeBody{
 						AppName:         dep.Deployment.Labels["tenxcloud.com/appName"],
 						DeploymentTime:  time.Now(),
@@ -490,7 +490,7 @@ func HttpClientRequest(method, url string, body io.Reader, header map[string]str
 	defer resp.Body.Close()
 }
 
-func GetAppsStatus(k8sClient *client.ClientSet, appName, namespaces string) bool {
+func GetAppsStatus(k8sClient *client.ClientSet, appName, namespaces, svcName string) bool {
 
 	labelsStr := fmt.Sprintf("tenxcloud.com/appName=%s", appName)
 	labelsSel, err := labels.Parse(labelsStr)
@@ -510,7 +510,7 @@ func GetAppsStatus(k8sClient *client.ClientSet, appName, namespaces string) bool
 	}
 
 	for _, dep := range deploymentList.Items {
-		if dep.Status.ReadyReplicas == 0 {
+		if dep.Status.ReadyReplicas == 0 && dep.ObjectMeta.Name != svcName {
 			glog.Infof("svcName=%s,namespace:%s, dep.ObjectMeta.Name=%s\n", dep.Labels["tenxcloud.com/svcName"], dep.ObjectMeta.Namespace, dep.ObjectMeta.Name)
 			return false
 		}
