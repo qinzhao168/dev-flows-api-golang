@@ -28,7 +28,7 @@ type ImageMaps struct {
 }
 
 type InvokeBody struct {
-	AppName      string `json:"app_name"`
+	AppName         string `json:"app_name"`
 	DeploymentTime  time.Time `json:"deployment_time"`
 	DeploymentState string `json:"deployment_state"` //success failed
 }
@@ -203,10 +203,10 @@ func (ic *InvokeCDController) NotificationHandler() {
 				detail.SendEmailUsingFlowConfig(cdrule.Namespace, cdrule.FlowId)
 				glog.Errorf("%s inertRes=%d %v\n", method, inertRes, err)
 				message = "InsertCDLog failed " + string(data)
-				if GetAppsStatus(k8sClient, deployment.Labels["tenxcloud.com/appName"], deployment.ObjectMeta.Namespace) {
-					if cdrule.InvokeMethod != "" && cdrule.InvokeUrl != "" {
+				if cdrule.InvokeMethod != "" && cdrule.InvokeUrl != "" {
+					if GetAppsStatus(k8sClient, deployment.Labels["tenxcloud.com/appName"], deployment.ObjectMeta.Namespace) {
 						InvokeBody := &InvokeBody{
-							AppName:      deployment.Labels["tenxcloud.com/appName"],
+							AppName:         deployment.Labels["tenxcloud.com/appName"],
 							DeploymentTime:  time.Now(),
 							DeploymentState: detail.Result,
 						}
@@ -224,10 +224,10 @@ func (ic *InvokeCDController) NotificationHandler() {
 				Body:    fmt.Sprintf(`校验持续集成规则时发生异常或者该服务已经停止`),
 			}
 			detail.SendEmailUsingFlowConfig(cdrule.Namespace, cdrule.FlowId)
-			if GetAppsStatus(k8sClient, deployment.Labels["tenxcloud.com/appName"], deployment.ObjectMeta.Namespace) {
-				if cdrule.InvokeMethod != "" && cdrule.InvokeUrl != "" {
+			if cdrule.InvokeMethod != "" && cdrule.InvokeUrl != "" {
+				if GetAppsStatus(k8sClient, deployment.Labels["tenxcloud.com/appName"], deployment.ObjectMeta.Namespace) {
 					InvokeBody := &InvokeBody{
-						AppName:      deployment.Labels["tenxcloud.com/appName"],
+						AppName:         deployment.Labels["tenxcloud.com/appName"],
 						DeploymentTime:  time.Now(),
 						DeploymentState: detail.Result,
 					}
@@ -319,10 +319,10 @@ func (ic *InvokeCDController) NotificationHandler() {
 					}
 					detail.SendEmailUsingFlowConfig(dep.Namespace, dep.Flow_id)
 					glog.Errorf("%s insert deployment log failed: inertRes=%d, err:%v\n", method, inertRes, err)
-					if GetAppsStatus(k8sClient, dp.Labels["tenxcloud.com/appName"], dp.ObjectMeta.Namespace) {
-						if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
+					if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
+						if GetAppsStatus(k8sClient, dp.Labels["tenxcloud.com/appName"], dp.ObjectMeta.Namespace) {
 							InvokeBody := &InvokeBody{
-								AppName:     dp.Labels["tenxcloud.com/appName"],
+								AppName:         dp.Labels["tenxcloud.com/appName"],
 								DeploymentTime:  time.Now(),
 								DeploymentState: detail.Result,
 							}
@@ -339,11 +339,10 @@ func (ic *InvokeCDController) NotificationHandler() {
 					Body:    fmt.Sprintf(`更新服务时发生异常:%v`, err),
 				}
 				detail.SendEmailUsingFlowConfig(dep.Namespace, dep.Flow_id)
-
-				if GetAppsStatus(k8sClient, dp.Labels["tenxcloud.com/appName"], dp.ObjectMeta.Namespace) {
-					if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
+				if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
+					if GetAppsStatus(k8sClient, dp.Labels["tenxcloud.com/appName"], dp.ObjectMeta.Namespace) {
 						InvokeBody := &InvokeBody{
-							AppName:     dp.Labels["tenxcloud.com/appName"],
+							AppName:         dp.Labels["tenxcloud.com/appName"],
 							DeploymentTime:  time.Now(),
 							DeploymentState: detail.Result,
 						}
@@ -381,10 +380,10 @@ func (ic *InvokeCDController) NotificationHandler() {
 					dep.Deployment.ObjectMeta.Name, imageInfo.Fullname, imageInfo.Tag),
 			}
 			detail.SendEmailUsingFlowConfig(dep.Namespace, dep.Flow_id)
-			if GetAppsStatus(k8sClient, dp.Labels["tenxcloud.com/appName"], dp.ObjectMeta.Namespace) {
-				if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
+			if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
+				if GetAppsStatus(k8sClient, dp.Labels["tenxcloud.com/appName"], dp.ObjectMeta.Namespace) {
 					InvokeBody := &InvokeBody{
-						AppName:      dp.Labels["tenxcloud.com/appName"],
+						AppName:         dp.Labels["tenxcloud.com/appName"],
 						DeploymentTime:  time.Now(),
 						DeploymentState: detail.Result,
 					}
@@ -428,11 +427,10 @@ func (ic *InvokeCDController) NotificationHandler() {
 			}
 
 			detail.SendEmailUsingFlowConfig(dep.Namespace, dep.Flow_id)
-
-			if GetAppsStatus(k8sClient, dep.Deployment.Labels["tenxcloud.com/appName"], dep.Deployment.ObjectMeta.Namespace) {
-				if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
+			if dep.InvokeUrl != "" && dep.InvokeMethod != "" {
+				if GetAppsStatus(k8sClient, dep.Deployment.Labels["tenxcloud.com/appName"], dep.Deployment.ObjectMeta.Namespace) {
 					InvokeBody := &InvokeBody{
-						AppName:      dep.Deployment.Labels["tenxcloud.com/appName"],
+						AppName:         dep.Deployment.Labels["tenxcloud.com/appName"],
 						DeploymentTime:  time.Now(),
 						DeploymentState: detail.Result,
 					}
