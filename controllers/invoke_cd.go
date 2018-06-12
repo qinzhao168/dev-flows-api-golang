@@ -486,14 +486,11 @@ func HttpClientRequest(method, url string, body io.Reader, header map[string]str
 		}
 	}
 
-	resp, err := client.Do(req)
+	_, err = client.Do(req)
 	if err != nil {
 		glog.Errorf("client.Do HttpClientRequest failed:", err)
 	}
 
-	resp.Header.Set("Content-Type", "application/json; charset=utf-8")
-
-	defer resp.Body.Close()
 }
 
 func GetAppsStatus(k8sClient *client.ClientSet, appName, namespaces, svcName string) bool {
