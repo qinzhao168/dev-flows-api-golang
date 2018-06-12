@@ -488,7 +488,7 @@ func HttpClientRequest(method, url string, body io.Reader, header map[string]str
 
 	_, err = client.Do(req)
 	if err != nil {
-		glog.Errorf("client.Do HttpClientRequest failed:", err)
+		glog.Errorf("client.Do HttpClientRequest failed:%v\n", err)
 	}
 
 }
