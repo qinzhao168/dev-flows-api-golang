@@ -341,6 +341,7 @@ func (cirepo *CiReposController) AddRepository() {
 
 	_, err = depot.CreateOneRepo(repoInfo)
 	if err != nil {
+		glog.Errorf(" %s insert gitlab or gogs info into database failed: %v\n", method, err)
 		results = "insert gitlab or gogs info into database failed "
 		cirepo.ResponseErrorAndCode(results, http.StatusInternalServerError)
 		return
