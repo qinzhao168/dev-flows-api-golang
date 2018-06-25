@@ -13,6 +13,7 @@ import (
 	"os"
 	"strconv"
 	"dev-flows-api-golang/models"
+	"strings"
 )
 
 type JobStatusCount struct {
@@ -30,6 +31,7 @@ func init() {
 //默认值是10min执行一次清除job操作
 func deleteCICDJobs() {
 	BeginDeleteJob()
+	DeleteNsfCronJob()
 	var err error
 	var intervalTime int
 	INTERVAL_TIME := os.Getenv("INTERVAL_TIME")
@@ -50,6 +52,7 @@ func deleteCICDJobs() {
 		case <-t.C:
 			fmt.Printf("Delete job begin time = %s\n", time.Now())
 			BeginDeleteJob()
+			DeleteNsfCronJob()
 			glog.Infof("Delete  job end time = %s\n", time.Now())
 		}
 
@@ -144,6 +147,56 @@ func getAllJobsInAllNamespaces() (*v1batch.JobList, error) {
 	}
 
 	return client.KubernetesClientSet.BatchV1Client.Jobs("").List(listOptions)
+
+}
+
+func getAllJobsOfCronJobInDefaultNamespace() (*v1batch.JobList, error) {
+	listOptions := metav1.ListOptions{}
+	return client.KubernetesClientSet.BatchV1Client.Jobs("default").List(listOptions)
+
+}
+
+func DeleteNsfCronJob() {
+
+	//get all job
+	jobList, err := getAllJobsOfCronJobInDefaultNamespace()
+	if err != nil {
+		glog.Errorf("Get CronJob jobList failed:Err:%v\n", err)
+		return
+	}
+
+	if len(jobList.Items) == 0 {
+		return
+	}
+
+	glog.Infof("jobList.Items.length=%d\n", len(jobList.Items))
+
+	for _, job := range jobList.Items {
+
+		if CanDeleteJob(job) || tooOld(job) {
+
+			err := deleteOneCronJobInNamespace(job)
+			if err != nil {
+				glog.Errorf("deleteOneCronJobInNamespace job %s failed:%v", job.ObjectMeta.Name, err)
+			}
+		}
+
+	}
+
+}
+
+func deleteOneCronJobInNamespace(job v1batch.Job) error {
+
+	if strings.Contains(job.Labels["job-name"], "nfs-") {
+		for _, ownerReference := range job.OwnerReferences {
+			if ownerReference.Kind == "CronJob" {
+				return client.KubernetesClientSet.BatchV1Client.Jobs(job.Namespace).Delete(job.ObjectMeta.Name, nil)
+			}
+
+		}
+	}
+
+	return nil
 
 }
 
