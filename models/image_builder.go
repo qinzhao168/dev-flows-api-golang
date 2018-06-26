@@ -29,6 +29,7 @@ import (
 const (
 	SCM_CONTAINER_NAME         = "enn-scm"
 	BUILDER_CONTAINER_NAME     = "enn-builder"
+	BUILDER_SONAR_NAME         = "enn-sonar"
 	DEPENDENT_CONTAINER_NAME   = "enn-deps"
 	KIND_ERROR                 = "Status"
 	MANUAL_STOP_LABEL          = "enn-manual-stop-flag"
@@ -92,6 +93,12 @@ func (builder *ImageBuilder) BuildImage(buildInfo BuildInfo, volumeMapping []Set
 		buildImage = DEFAULT_IMAGE_BUILDER
 	}
 
+	//从环境变量获取sonar镜像
+	sonarImage := os.Getenv("SONAR_SCANNER")
+	if sonarImage == "" {
+		sonarImage = "qinzhao-harbor/sonar-scanner:v2.2"
+	}
+
 	volumeMounts := []apiv1.VolumeMount{
 		{
 			Name:      "repo-path",
@@ -141,6 +148,10 @@ func (builder *ImageBuilder) BuildImage(buildInfo BuildInfo, volumeMapping []Set
 	if len(strings.Split(buildImage, "/")) == 2 {
 		buildImage = common.HarborServerUrl + "/" + buildImage
 	}
+	//sonar
+	if len(strings.Split(sonarImage, "/")) == 2 {
+		sonarImage = common.HarborServerUrl + "/" + sonarImage
+	}
 
 	//指定到相同的节点上做CICD
 	if BUILD_AT_SAME_NODE && buildInfo.NodeName != "" {
@@ -157,6 +168,13 @@ func (builder *ImageBuilder) BuildImage(buildInfo BuildInfo, volumeMapping []Set
 		VolumeMounts: volumeMounts,
 	}
 
+	jobContainerSonar := apiv1.Container{
+		Name:            BUILDER_SONAR_NAME,
+		Image:           sonarImage,
+		ImagePullPolicy: apiv1.PullAlways,
+		VolumeMounts:    volumeMounts,
+	}
+
 	if len(buildInfo.Command) != 0 && buildInfo.Type != 3 {
 		jobContainer.Command = buildInfo.Command
 	} else if len(buildInfo.Command) == 0 && buildInfo.Type != 3 {
@@ -166,6 +184,7 @@ func (builder *ImageBuilder) BuildImage(buildInfo BuildInfo, volumeMapping []Set
 	if buildInfo.Type == 3 {
 		jobContainer.WorkingDir = "/"
 	} else {
+		jobContainerSonar.WorkingDir = buildInfo.Clone_location
 		jobContainer.WorkingDir = buildInfo.Clone_location
 	}
 
@@ -381,6 +400,21 @@ func (builder *ImageBuilder) BuildImage(buildInfo BuildInfo, volumeMapping []Set
 			MountPath: buildInfo.Clone_location,
 		},
 	}
+	//sonar image  buildInfo.RepoUrl
+	jobContainerSonar.Env = []apiv1.EnvVar{
+		{
+			Name:  "GIT_REPO",
+			Value: SplitRepo(buildInfo.RepoUrl),
+		},
+		{
+			Name:  "GIT_TAG",
+			Value: buildInfo.Branch,
+		},
+		{
+			Name:  "REPO_TYPE",
+			Value: buildInfo.RepoType,
+		},
+	}
 
 	//类型为构建，仓库类型为‘本地镜像仓库’
 
@@ -434,6 +468,10 @@ func (builder *ImageBuilder) BuildImage(buildInfo BuildInfo, volumeMapping []Set
 				Name:  "SVNPROJECT",
 				Value: e.Value,
 			}, )
+			jobContainerSonar.Env = append(jobContainerSonar.Env, apiv1.EnvVar{
+				Name:  "SVNPROJECT",
+				Value: e.Value,
+			}, )
 		}
 
 		if (e.Name == "SCRIPT_ENTRY_INFO" || e.Name == "SCRIPT_URL") && "" != e.Value && buildInfo.Type != 3 {
@@ -456,6 +494,10 @@ func (builder *ImageBuilder) BuildImage(buildInfo BuildInfo, volumeMapping []Set
 	jobContainer.Env = env
 
 	jobTemplate.Spec.Template.Spec.Containers = append(jobTemplate.Spec.Template.Spec.Containers, jobContainer)
+	//不是构建镜像才把代码质量分析的镜像启动
+	if buildInfo.Type != 3 {
+		jobTemplate.Spec.Template.Spec.Containers = append(jobTemplate.Spec.Template.Spec.Containers, jobContainerSonar)
+	}
 
 	return builder.Client.BatchV1Client.Jobs(buildInfo.Namespace).Create(jobTemplate)
 
@@ -881,4 +923,14 @@ func Int32Toint32Point(input int32) *int32 {
 	*tmp = int32(input)
 	return tmp
 
+}
+
+func SplitRepo(repoUrl string) string {
+	gitRepoInfo := strings.Split(repoUrl, "/")
+
+	gitRepoInfoLen := len(gitRepoInfo)
+
+	projectName := strings.Split(gitRepoInfo[gitRepoInfoLen-1], ".")[0]
+
+	return projectName
 }

@@ -15,6 +15,7 @@ docker run --restart=always --name cicd \
                -e BIND_BUILD_NODE=true \
                -e DEVOPS_EXTERNAL_PROTOCOL=https \
                -e DEVOPS_HOST=$vip_url:38090 \
+               -e SONAR_SCANNER=qinzhao-harbor/sonar-scanner:v2.2
                -e DEVOPS_EXTERNAL_HOST=$vip_url:38090 \
                -e EXTERNAL_ES_URL=http://paasdev.enncloud.cn:9200 \
                -e USERPORTAL_URL=https://$vip_url \
